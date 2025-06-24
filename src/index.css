@@ -1,68 +1,49 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* src/index.css */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* 
+ * Questo file è il punto di ingresso per gli stili CSS globali.
+ * Se stai usando Styled Components per la maggior parte degli stili globali
+ * (tramite GlobalStyle.js), questo file si concentra su:
+ * 1. Importazione delle direttive di Tailwind CSS (se in uso).
+ * 2. Importazione degli stili di librerie esterne che non sono Styled Components.
+ */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* -------------------------------------------------------------------------
+ * 1. Direttive di Tailwind CSS (se configurato nel progetto)
+ *    Queste importano gli stili base, i componenti e le utility di Tailwind.
+ *    Assicurati che Tailwind CSS sia installato e configurato (tailwind.config.js).
+ * ------------------------------------------------------------------------- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+/* -------------------------------------------------------------------------
+ * 2. Stili di librerie esterne
+ *    Qui importiamo il CSS di librerie come react-toastify per le notifiche.
+ *    La libreria React Toastify è utilizzata per i messaggi di feedback [14, 15].
+ * ------------------------------------------------------------------------- */
+@import 'react-toastify/dist/ReactToastify.css';
 
+/* -------------------------------------------------------------------------
+ * 3. Eventuali stili CSS globali di base (alternativi o aggiuntivi a GlobalStyle)
+ *    Se non usi GlobalStyle.js per il reset o per definizioni base del body,
+ *    potresti includerli qui. Nel tuo progetto, GlobalStyle.js gestisce già:
+ *    - Reset CSS [7]
+ *    - Font globali (es. 'Inter' come visto in GlobalStyle.js [7])
+ *    - Colori di sfondo e testo iniziali (gestiti dal tema dinamico) [7]
+ *    - Outline per accessibilità su elementi in focus [3, 5, 7, 17, 18]
+ *    Quindi, questa sezione può rimanere minima o vuota.
+ * ------------------------------------------------------------------------- */
 body {
-  margin: 0;
+  /* Esempio: assicurati che il flexbox per il layout generale sia attivo */
   display: flex;
-  place-items: center;
-  min-width: 320px;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  flex: 1; /* Assicura che #root si espanda per occupare lo spazio disponibile */
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* Nota: altri stili globali o variabili sono definiti in src/styles/GlobalStyle.js
+   e src/styles/theme.js e applicati tramite ThemeProvider e GlobalStyle in App.jsx. */

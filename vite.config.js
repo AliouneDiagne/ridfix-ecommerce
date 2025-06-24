@@ -1,13 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc'; // Usa SWC per velocità
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173
+    port: 5173, // Porta di default per Vite, puoi cambiarla
   },
-  define: {
-    'process.env': {}
-  }
-})
+  resolve: {
+    alias: {
+      // Configura un alias per semplificare gli import da 'src/'
+      '@': '/src',
+    },
+  },
+});
