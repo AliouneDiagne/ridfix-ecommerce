@@ -1,64 +1,58 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify'; // Importa toast per le notifiche
+import { toast } from 'react-toastify';
 
-// Funzione di utilità per caricare la wishlist dal localStorage
 const loadWishlistState = () => {
   try {
-    const serializedState = localStorage.getItem('wishlistState');
-    if (serializedState === null) {
-      return { items: {} }; // Stato iniziale vuoto
-    }
-    return JSON.parse(serializedState);
-  } catch (err) {
-    console.error("Error loading wishlist state from localStorage:", err);
+    const state = localStorage.getItem('wishlistState');
+    return state ? JSON.parse(state) : { items: {} };
+  } catch {
     return { items: {} };
   }
 };
 
-// Funzione di utilità per salvare la wishlist nel localStorage
 const saveWishlistState = (state) => {
   try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('wishlistState', serializedState);
+    localStorage.setItem('wishlistState', JSON.stringify(state));
   } catch (err) {
-    console.error("Error saving wishlist state to localStorage:", err);
+    console.error('Wishlist save error:', err);
   }
 };
 
-// Stato iniziale della wishlist
 const initialState = loadWishlistState();
 
-// Creazione dello slice 'wishlist'
 const wishlistSlice = createSlice({
-  name: 'wishlist', // Nome dello slice
-  initialState, // Stato iniziale
+  name: 'wishlist',
+  initialState,
   reducers: {
-    // Azione per aggiungere/rimuovere un prodotto dalla wishlist
     toggleWishlist: (state, action) => {
       const product = action.payload;
       const id = product.id;
 
       if (state.items[id]) {
-        // Se il prodotto è già nella wishlist, lo rimuove
         delete state.items[id];
-        toast.info(`"${product.name}" removed from wishlist.`); // Notifica
+        toast.info(`"${product.name}" removed from wishlist.`);
       } else {
-        // Altrimenti, lo aggiunge
         state.items[id] = product;
-        toast.success(`"${product.name}" added to wishlist!`); // Notifica
+        toast.success(`"${product.name}" added to wishlist.`);
       }
-      saveWishlistState(state); // Salva lo stato nel localStorage
+
+      saveWishlistState(state);
     },
-    // Azione per svuotare completamente la wishlist
     clearWishlist: (state) => {
       state.items = {};
       saveWishlistState(state);
-      toast.success('Your wishlist has been cleared.');
-    }
+      toast.success('Wishlist cleared.');
+    },
+    removeFromWishlist: (state, action) => {
+      const id = action.payload;
+      if (state.items[id]) {
+        delete state.items[id];
+        toast.info('Item removed from wishlist.');
+      }
+      saveWishlistState(state);
+    },
   },
 });
 
-// Esporta le azioni generate automaticamente
-export const { toggleWishlist, clearWishlist } = wishlistSlice.actions;
-// Esporta il reducer
+export const { toggleWishlist, clearWishlist, removeFromWishlist } = wishlistSlice.actions;
 export default wishlistSlice.reducer;

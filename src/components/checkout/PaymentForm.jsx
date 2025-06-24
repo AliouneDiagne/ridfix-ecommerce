@@ -1,6 +1,5 @@
+// Form per i dati di pagamento
 
-src/components/checkout/PaymentForm.jsx
-Form per i dati di pagamento.47...
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,7 +11,7 @@ import { toast } from 'react-toastify';
 import formatPrice from '../../utils/formatPrice';
 
 /**
- * Schema di validazione per il form di pagamento con Yup. [58, 81]
+ * Schema di validazione per il form di pagamento con Yup
  */
 const paymentSchema = yup.object().shape({
   cardName: yup.string().required('Name on card is required'),
@@ -20,7 +19,7 @@ const paymentSchema = yup.object().shape({
     .matches(/^\d{16}$/, 'Card number must be 16 digits')
     .required('Card number is required'),
   expiry: yup.string()
-    .matches(/^(0[82-90]|1[82, 83])\/\d{2}$/, 'Expiry date must be MM/YY')
+    .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Expiry date must be MM/YY')
     .required('Expiry date is required'),
   cvv: yup.string()
     .matches(/^\d{3,4}$/, 'CVV must be 3 or 4 digits')
@@ -28,8 +27,7 @@ const paymentSchema = yup.object().shape({
 });
 
 /**
- * Componente PaymentForm.
- * Gestisce l'inserimento dei dati di pagamento (mock UI per Stripe/PayPal). [83]
+ * Stili del contenitore del form
  */
 const FormContainer = styled.form`
   display: flex;
@@ -49,18 +47,24 @@ const ButtonGroup = styled.div`
   margin-top: ${({ theme }) => theme.spacing(3)};
 `;
 
+/**
+ * Componente PaymentForm
+ */
 const PaymentForm = ({ onNext, onBack, total }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
     resolver: yupResolver(paymentSchema),
   });
 
   const onSubmit = async (data) => {
     try {
-      // Simulazione di un pagamento. In un'app reale, si integrerebbe con un gateway di pagamento. [58]
       console.log('Payment Data:', data);
       toast.success(`Payment of ${formatPrice(total)} processed successfully!`);
-      onNext(); // Passa al prossimo step [76]
-    } catch (error) {
+      onNext();
+    } catch {
       toast.error('Error processing payment.');
     }
   };

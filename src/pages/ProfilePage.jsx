@@ -1,31 +1,31 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import styled from 'styled-components'
-import { fetchUserProfile, clearUserProfile } from '../store/slices/usersSlice'
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { fetchUserProfile, clearUserProfile } from '../store/slices/usersSlice';
 
 const Container = styled.div`
   padding: 2rem;
-`
+`;
 const Title = styled.h1`
   margin-bottom: 1rem;
-`
+`;
 const Info = styled.div`
   display: flex;
   flex-direction: column;
-  gap: .5rem;
-`
+  gap: 0.5rem;
+`;
 
 export default function ProfilePage() {
-  const { profile, status } = useSelector(state => state.users)
-  const dispatch = useDispatch()
+  const { user: profile, status } = useSelector(state => state.users);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchUserProfile())
-    return () => dispatch(clearUserProfile())
-  }, [dispatch])
+    dispatch(fetchUserProfile());
+    return () => dispatch(clearUserProfile());
+  }, [dispatch]);
 
-  if (status === 'loading') return <p>Loading...</p>
-  if (!profile) return <p>No profile found.</p>
+  if (status === 'loading') return <p>Loading...</p>;
+  if (!profile) return <p>No profile found.</p>;
 
   return (
     <Container>
@@ -36,5 +36,5 @@ export default function ProfilePage() {
         <div><strong>Role:</strong> {profile.role}</div>
       </Info>
     </Container>
-  )
+  );
 }
