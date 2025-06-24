@@ -1,19 +1,548 @@
-{
-  "posts": [
+{ 
+ "products": [
     {
       "id": 1,
-      "title": "json-server",
-      "author": "typicode"
-    }
-  ],
-  "comments": [
+      "name": "Malossi MHR Replica Exhaust",
+      "category": "Engine",
+      "brand": "Malossi",
+      "price": 249.99,
+      "inStock": 15,
+      "images": ["/images/product-1.jpg", "/images/product-1b.jpg"],
+      "description": "High-performance racing exhaust for 50cc scooters. Improves power and acceleration. Made from high-quality steel with a clear coat finish.",
+      "specs": {
+        "material": "Steel",
+        "weight": "2.5kg",
+        "compatibility": "Piaggio Zip, Vespa 50"
+      },
+      "rating": 4.8,
+      "reviews": [
+        { "id": 1, "name": "Luca V.", "rating": 5, "comment": "Amazing sound and power!" }
+      ],
+      "featured": true,
+      "discountPrice": 229.99
+    },
     {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
+      "id": 2,
+      "name": "Polini Air Filter Sponge",
+      "category": "Engine",
+      "brand": "Polini",
+      "price": 149.9,
+      "inStock": 50,
+      "images": ["/images/product-2.jpg"],
+      "description": "Replacement sponge for Polini air filters. Ensures optimal air flow and filtration. Essential for engine longevity.",
+      "specs": {
+        "material": "Foam",
+        "dimensions": "10x10cm",
+        "compatibility": "Universal Polini filters"
+      },
+      "rating": 4.5,
+      "reviews": [
+        { "id": 2, "name": "Marco G.", "rating": 4, "comment": "Good quality, easy to replace." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 3,
+      "name": "Piaggio Original Front Brake Pads",
+      "category": "Bodywork",
+      "brand": "Piaggio",
+      "price": 29.99,
+      "inStock": 25,
+      "images": ["/images/product-3.jpg"],
+      "description": "Genuine Piaggio front brake pads. Ensures safe and reliable braking performance. Direct replacement part.",
+      "specs": {
+        "material": "Semi-metallic",
+        "position": "Front",
+        "compatibility": "Vespa GTS 300, Piaggio MP3"
+      },
+      "rating": 4.7,
+      "reviews": [
+        { "id": 3, "name": "Giulia P.", "rating": 5, "comment": "Perfect fit, great braking." }
+      ],
+      "featured": true,
+      "discountPrice": 2499
+    },
+    {
+      "id": 4,
+      "name": "Yamaha NMAX LED Tail Light",
+      "category": "Electrical",
+      "brand": "Yamaha",
+      "price": 79.99,
+      "inStock": 10,
+      "images": ["/images/product-4.jpg"],
+      "description": "Stylish and bright LED tail light for Yamaha NMAX. Improves visibility and modernizes the look of your scooter.",
+      "specs": {
+        "type": "LED",
+        "voltage": "12V",
+        "compatibility": "Yamaha NMAX 125/155"
+      },
+      "rating": 4.6,
+      "reviews": [
+        { "id": 4, "name": "Andrea R.", "rating": 5, "comment": "Looks amazing, very bright." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 5,
+      "name": "Aprilia SR 50 Side Stand",
+      "category": "Bodywork",
+      "brand": "Aprilia",
+      "price": 39.99,
+      "inStock": 20,
+      "images": ["/images/product-5.jpg"],
+      "description": "Durable and easy to install side stand for Aprilia SR 50. Provides a convenient alternative to the center stand.",
+      "specs": {
+        "material": "Steel",
+        "installation": "Bolt-on",
+        "compatibility": "Aprilia SR 50 (all models)"
+      },
+      "rating": 4.3,
+      "reviews": [
+        { "id": 5, "name": "Fabio D.", "rating": 4, "comment": "Sturdy and practical." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 6,
+      "name": "Malossi Variator Weights Kit",
+      "category": "Engine",
+      "brand": "Malossi",
+      "price": 19.99,
+      "inStock": 30,
+      "images": ["/images/product-6.jpg"],
+      "description": "Performance variator roller weights from Malossi. Essential for tuning your scooter's transmission for optimal acceleration.",
+      "specs": {
+        "material": "Nylon",
+        "weight_options": "Varied",
+        "compatibility": "Malossi Variators"
+      },
+      "rating": 4.6,
+      "reviews": [
+        { "id": 6, "name": "Riccardo M.", "rating": 5, "comment": "Improved acceleration instantly!" }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 7,
+      "name": "Polini Hi-Speed Variator Kit",
+      "category": "Engine",
+      "brand": "Polini",
+      "price": 129.99,
+      "inStock": 10,
+      "images": ["/images/product-7.jpg"],
+      "description": "Complete Polini Hi-Speed variator kit for enhanced transmission performance. Includes variator, ramp plate, rollers, and spring.",
+      "specs": {
+        "material": "Aluminum",
+        "performance_gain": "Significant",
+        "compatibility": "Honda SH 150"
+      },
+      "rating": 4.9,
+      "reviews": [
+        { "id": 7, "name": "Elena B.", "rating": 5, "comment": "Scooter feels like new, highly recommended." }
+      ],
+      "featured": true,
+      "discountPrice": 110.00
+    },
+    {
+      "id": 8,
+      "name": "Piaggio Zip 50 Headlight Assembly",
+      "category": "Electrical",
+      "brand": "Piaggio",
+      "price": 59.99,
+      "inStock": 18,
+      "images": ["/images/product-8.jpg"],
+      "description": "Original Piaggio headlight assembly for Zip 50. Ensures proper illumination and road safety. Includes bulb.",
+      "specs": {
+        "type": "Halogen",
+        "voltage": "12V",
+        "compatibility": "Piaggio Zip 50 2T/4T"
+      },
+      "rating": 4.4,
+      "reviews": [
+        { "id": 8, "name": "Paolo F.", "rating": 4, "comment": "Good replacement, easy install." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 9,
+      "name": "Yamaha XMAX 300 Sport Windshield",
+      "category": "Bodywork",
+      "brand": "Yamaha",
+      "price": 89.99,
+      "inStock": 8,
+      "images": ["/images/product-9.jpg"],
+      "description": "Sporty short windshield for Yamaha XMAX 300. Reduces wind blast and adds a stylish touch. Easy to mount.",
+      "specs": {
+        "material": "Polycarbonate",
+        "color": "Smoked",
+        "compatibility": "Yamaha XMAX 300/400"
+      },
+      "rating": 4.7,
+      "reviews": [
+        { "id": 9, "name": "Sara C.", "rating": 5, "comment": "Looks great and effective for city riding." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 10,
+      "name": "Aprilia Racing Brake Lever Set",
+      "category": "Accessories",
+      "brand": "Aprilia",
+      "price": 69.99,
+      "inStock": 12,
+      "images": ["/images/product-10.jpg"],
+      "description": "Adjustable racing brake and clutch levers for Aprilia scooters. Ergonomic design for improved feel and control.",
+      "specs": {
+        "material": "CNC Aluminum",
+        "color": "Black/Orange",
+        "compatibility": "Aprilia SRV 850, Dorsoduro"
+      },
+      "rating": 4.8,
+      "reviews": [
+        { "id": 10, "name": "Giovanni Z.", "rating": 5, "comment": "Fantastic quality and feel." }
+      ],
+      "featured": true,
+      "discountPrice": 60.00
+    },
+    {
+      "id": 11,
+      "name": "Malossi Clutch Bell",
+      "category": "Engine",
+      "brand": "Malossi",
+      "price": 59.99,
+      "inStock": 22,
+      "images": ["/images/product-11.jpg"],
+      "description": "Reinforced clutch bell from Malossi for improved power transmission and durability. Reduces vibrations.",
+      "specs": {
+        "material": "Steel",
+        "diameter": "112mm",
+        "compatibility": "Various 50cc-300cc scooters"
+      },
+      "rating": 4.5,
+      "reviews": [
+        { "id": 11, "name": "Laura D.", "rating": 4, "comment": "Noticeable improvement in launch." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 12,
+      "name": "Polini Evolution 3 Clutch",
+      "category": "Engine",
+      "brand": "Polini",
+      "price": 89.99,
+      "inStock": 9,
+      "images": ["/images/product-12.jpg"],
+      "description": "High-performance racing clutch from Polini. Offers precise engagement and consistent performance for tuned engines.",
+      "specs": {
+        "material": "Aluminum/Steel",
+        "adjustable": "Yes",
+        "compatibility": "Racing engines"
+      },
+      "rating": 4.9,
+      "reviews": [
+        { "id": 12, "name": "Davide S.", "rating": 5, "comment": "Best clutch I've ever used, perfect for racing." }
+      ],
+      "featured": true,
+      "discountPrice": 79.00
+    },
+    {
+      "id": 13,
+      "name": "Piaggio Liberty 125 Seat Cover",
+      "category": "Bodywork",
+      "brand": "Piaggio",
+      "price": 34.99,
+      "inStock": 17,
+      "images": ["/images/product-13.jpg"],
+      "description": "Custom fit seat cover for Piaggio Liberty 125. Protects original seat and adds a fresh look. Easy to install.",
+      "specs": {
+        "material": "Vinyl",
+        "color": "Black",
+        "compatibility": "Piaggio Liberty 125 (all years)"
+      },
+      "rating": 4.2,
+      "reviews": [
+        { "id": 13, "name": "Sofia L.", "rating": 4, "comment": "Fits well, looks good." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 14,
+      "name": "Yamaha Aerox 50 Carburetor",
+      "category": "Engine",
+      "brand": "Yamaha",
+      "price": 119.99,
+      "inStock": 7,
+      "images": ["/images/product-14.jpg"],
+      "description": "Original Yamaha carburetor for Aerox 50. Ensures proper fuel mixture and optimal engine performance.",
+      "specs": {
+        "type": "Dell'Orto",
+        "bore": "17.5mm",
+        "compatibility": "Yamaha Aerox 50"
+      },
+      "rating": 4.6,
+      "reviews": [
+        { "id": 14, "name": "Matteo V.", "rating": 5, "comment": "Fixed my scooter's idling issues." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 15,
+      "name": "Aprilia Scarabeo 200 Rear View Mirror (Right)",
+      "category": "Bodywork",
+      "brand": "Aprilia",
+      "price": 24.99,
+      "inStock": 30,
+      "images": ["/images/product-15.jpg"],
+      "description": "Right side rear view mirror for Aprilia Scarabeo 200. Original replacement part. Ensures clear visibility.",
+      "specs": {
+        "side": "Right",
+        "material": "Plastic/Glass",
+        "compatibility": "Aprilia Scarabeo 200"
+      },
+      "rating": 4.0,
+      "reviews": [
+        { "id": 15, "name": "Chiara B.", "rating": 4, "comment": "Exact replacement, quick delivery." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 16,
+      "name": "Malossi Sport 70cc Cylinder Kit",
+      "category": "Engine",
+      "brand": "Malossi",
+      "price": 189.99,
+      "inStock": 5,
+      "images": ["/images/product-16.jpg"],
+      "description": "Malossi Sport 70cc cast iron cylinder kit. Increases displacement and power for sport use. Includes piston and gaskets.",
+      "specs": {
+        "material": "Cast Iron",
+        "displacement": "70cc",
+        "cooling": "Air Cooled"
+      },
+      "rating": 4.8,
+      "reviews": [
+        { "id": 16, "name": "Antonio S.", "rating": 5, "comment": "Big power increase, very happy with it." }
+      ],
+      "featured": true,
+      "discountPrice": 169.99
+    },
+    {
+      "id": 17,
+      "name": "Polini CP 19mm Carburetor",
+      "category": "Engine",
+      "brand": "Polini",
+      "price": 99.99,
+      "inStock": 12,
+      "images": ["/images/product-17.jpg"],
+      "description": "Polini CP 19mm racing carburetor. Lightweight and compact design for maximum performance on tuned engines. Easy to jet.",
+      "specs": {
+        "bore": "19mm",
+        "filter_connection": "32mm",
+        "compatibility": "Universal"
+      },
+      "rating": 4.7,
+      "reviews": [
+        { "id": 17, "name": "Vincenzo N.", "rating": 5, "comment": "Perfect for my 70cc setup, smooth throttle response." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 18,
+      "name": "Piaggio Vespa Primavera Headlight Grill",
+      "category": "Accessories",
+      "brand": "Piaggio",
+      "price": 19.99,
+      "inStock": 40,
+      "images": ["/images/product-18.jpg"],
+      "description": "Chrome headlight grill for Vespa Primavera. Adds a vintage touch and protects the headlight. Easy clip-on installation.",
+      "specs": {
+        "material": "Chrome Steel",
+        "installation": "Clip-on",
+        "compatibility": "Vespa Primavera/Sprint"
+      },
+      "rating": 4.1,
+      "reviews": [
+        { "id": 18, "name": "Francesca T.", "rating": 4, "comment": "Looks good, fast delivery." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 19,
+      "name": "Yamaha Aerox 50 Oil Pump",
+      "category": "Engine",
+      "brand": "Yamaha",
+      "price": 49.99,
+      "inStock": 8,
+      "images": ["/images/product-19.jpg"],
+      "description": "Genuine Yamaha oil pump for Aerox 50. Ensures proper lubrication of engine components. Critical for engine health.",
+      "specs": {
+        "type": "Original",
+        "function": "Lubrication",
+        "compatibility": "Yamaha Aerox 50"
+      },
+      "rating": 4.5,
+      "reviews": [
+        { "id": 19, "name": "Antonio P.", "rating": 5, "comment": "Perfect replacement, no more oil issues." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 20,
+      "name": "Aprilia RS 125 Front Fairing (Left)",
+      "category": "Bodywork",
+      "brand": "Aprilia",
+      "price": 149.99,
+      "inStock": 3,
+      "images": ["/images/product-20.jpg"],
+      "description": "Left side front fairing for Aprilia RS 125. Original style replacement. Minor imperfections might be present.",
+      "specs": {
+        "side": "Left",
+        "material": "ABS Plastic",
+        "color": "Black",
+        "compatibility": "Aprilia RS 125"
+      },
+      "rating": 4.0,
+      "reviews": [
+        { "id": 20, "name": "Roberto Q.", "rating": 3, "comment": "Fit was okay, but needed some minor adjustments." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 21,
+      "name": "Malossi HTQ Primary Gear",
+      "category": "Engine",
+      "brand": "Malossi",
+      "price": 79.99,
+      "inStock": 10,
+      "images": ["/images/product-21.jpg"],
+      "description": "High-torque primary gear set from Malossi. Increases top speed and improves overall performance. Precision machined.",
+      "specs": {
+        "ratio": "Longer",
+        "material": "Steel",
+        "compatibility": "Various 50cc-150cc scooters"
+      },
+      "rating": 4.7,
+      "reviews": [
+        { "id": 21, "name": "Simone D.", "rating": 5, "comment": "Definitely gained some top speed, quality part." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 22,
+      "name": "Polini Main Jet Set (Dell'Orto)",
+      "category": "Tools",
+      "brand": "Polini",
+      "price": 19.99,
+      "inStock": 50,
+      "images": ["/images/product-22.jpg"],
+      "description": "Set of Polini main jets for Dell'Orto carburetors. Essential for fine-tuning fuel mixture for different conditions or engine setups.",
+      "specs": {
+        "sizes": "Various",
+        "carburetor_type": "Dell'Orto",
+        "usage": "Tuning"
+      },
+      "rating": 4.4,
+      "reviews": [
+        { "id": 22, "name": "Leo C.", "rating": 4, "comment": "Good range of jets, useful for my tuning." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 23,
+      "name": "Piaggio MP3 300 Drive Belt",
+      "category": "Engine",
+      "brand": "Piaggio",
+      "price": 49.99,
+      "inStock": 15,
+      "images": ["/images/product-23.jpg"],
+      "description": "Original Piaggio drive belt for MP3 300. Ensures reliable power transmission from engine to wheel. Long-lasting durability.",
+      "specs": {
+        "material": "Kevlar Reinforced",
+        "durability": "High",
+        "compatibility": "Piaggio MP3 300/350"
+      },
+      "rating": 4.6,
+      "reviews": [
+        { "id": 23, "name": "Giuseppe A.", "rating": 5, "comment": "Perfect replacement belt, scooter runs smooth." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 24,
+      "name": "Yamaha Aerox 50 Sport Exhaust",
+      "category": "Engine",
+      "brand": "Yamaha",
+      "price": 179.99,
+      "inStock": 6,
+      "images": ["/images/product-24.jpg"],
+      "description": "Sport exhaust system for Yamaha Aerox 50. Offers improved sound and a slight performance boost. Road legal (if restricted).",
+      "specs": {
+        "material": "Steel",
+        "finish": "Black",
+        "compatibility": "Yamaha Aerox 50"
+      },
+      "rating": 4.7,
+      "reviews": [
+        { "id": 24, "name": "Elisa P.", "rating": 5, "comment": "Sounds great, easy to install." }
+      ],
+      "featured": false,
+      "discountPrice": null
+    },
+    {
+      "id": 25,
+      "name": "Aprilia SR 50 Digital Speedometer",
+      "category": "Electrical",
+      "brand": "Aprilia",
+      "price": 129.99,
+      "inStock": 4,
+      "images": ["/images/product-25.jpg"],
+      "description": "Advanced digital speedometer for Aprilia SR 50. Features clear display, trip meter, and fuel gauge. Backlit for night use.",
+      "specs": {
+        "display": "Digital LCD",
+        "features": "Speed, RPM, Fuel, Trip",
+        "compatibility": "Aprilia SR 50 (selected models)"
+      },
+      "rating": 4.5,
+      "reviews": [
+        { "id": 25, "name": "Federico R.", "rating": 4, "comment": "Modern look, all info in one place." }
+      ],
+      "featured": false,
+      "discountPrice": 109.99
     }
   ],
-  "profile": {
-    "name": "typicode"
-  }
+ "brands": [
+    { "id": 1, "name": "Polini", "logo": "/images/brand-logo-polini.png" },
+    { "id": 2, "name": "Malossi", "logo": "/images/brand-logo-malossi.png" },
+    { "id": 3, "name": "Piaggio", "logo": "/images/brand-logo-piaggio.png" },
+    { "id": 4, "name": "Yamaha", "logo": "/images/brand-logo-yamaha.png" },
+    { "id": 5, "name": "Aprilia", "logo": "/images/brand-logo-aprilia.png" }
+  ],
+
+  "orders": [],
+  "users": [],
+  "categories": [
+    "Engine",
+    "Bodywork",
+    "Accessories",
+    "Detergents",
+    "Tools",
+    "Electrical"
+  ]
 }

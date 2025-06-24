@@ -16,11 +16,15 @@ const Info = styled.div`
 `;
 
 export default function ProfilePage() {
-  const { user: profile, status } = useSelector(state => state.users);
+  const { profile, status } = useSelector(state => state.users);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchUserProfile());
+    const email = localStorage.getItem('userEmail'); // oppure da auth state se hai login
+    if (email) {
+      dispatch(fetchUserProfile(email));
+    }
+
     return () => dispatch(clearUserProfile());
   }, [dispatch]);
 
@@ -33,7 +37,7 @@ export default function ProfilePage() {
       <Info>
         <div><strong>Name:</strong> {profile.name}</div>
         <div><strong>Email:</strong> {profile.email}</div>
-        <div><strong>Role:</strong> {profile.role}</div>
+        <div><strong>Role:</strong> {profile.role || 'user'}</div>
       </Info>
     </Container>
   );

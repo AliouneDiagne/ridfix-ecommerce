@@ -1,84 +1,86 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../api/api';
 import { toast } from 'react-toastify';
 
-// 🔄 AsyncThunk: registrazione utente
+// 🔐 REGISTER USER (fake async)
 export const registerUser = createAsyncThunk(
   'users/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
-      localStorage.setItem('user', JSON.stringify(userData));
-      return userData;
-    } catch {
-      return rejectWithValue('Registration failed');
+      const res = await api.post('/users', userData);
+      toast.success('User registered successfully');
+      return res.data;
+    } catch (err) {
+      toast.error('Registration failed');
+      return rejectWithValue(err.message);
     }
   }
 );
 
-// 🔄 AsyncThunk: recupero profilo utente
+// 👤 FETCH USER PROFILE by email (mocked)
 export const fetchUserProfile = createAsyncThunk(
   'users/fetchUserProfile',
-  async (_, { rejectWithValue }) => {
+  async (email, { rejectWithValue }) => {
     try {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser) throw new Error('No user found');
-      return storedUser;
-    } catch {
-      return rejectWithValue('Failed to fetch user profile');
+      const res = await api.get(`/users?email=${email}`);
+      if (res.data.length === 0) {
+        throw new Error('User not found');
+      }
+      return res.data[0]; // Assumes unique email
+    } catch (err) {
+      toast.error('Profile fetch failed');
+      return rejectWithValue(err.message);
     }
   }
 );
 
-// Stato iniziale
+// 🔧 Initial state
 const initialState = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
-  isAuthenticated: !!localStorage.getItem('user'),
-  status: 'idle', // per il caricamento profilo
+  profile: null,
+  status: 'idle',
+  error: null,
 };
 
-// Slice
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
-      localStorage.removeItem('user');
-      toast.info('User logged out.');
-    },
-    clearUserProfile: (state) => {
-      state.user = null;
+    clearUserProfile(state) {
+      state.profile = null;
       state.status = 'idle';
-      toast.info('User profile cleared.');
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(registerUser.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        toast.success('Registration successful!');
+        state.status = 'succeeded';
+        state.profile = action.payload;
       })
-      .addCase(registerUser.rejected, () => {
-        toast.error('Registration failed.');
+      .addCase(registerUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       })
+
       .addCase(fetchUserProfile.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.user = action.payload;
         state.status = 'succeeded';
-        state.isAuthenticated = true;
+        state.profile = action.payload;
       })
-      .addCase(fetchUserProfile.rejected, (state) => {
-        state.user = null;
+      .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = 'failed';
-        state.isAuthenticated = false;
-        toast.error('Failed to fetch user profile.');
+        state.error = action.payload;
       });
   },
 });
 
-// ✅ Export corretti
-export const { logout, clearUserProfile } = usersSlice.actions;
+// ✅ EXPORTS
+export const { clearUserProfile } = usersSlice.actions;
 export default usersSlice.reducer;
