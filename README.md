@@ -40,7 +40,7 @@ Follow these steps to get the Ridfix project up and running on your local machin
 
 1.  **Clone the Repository**:
     ```bash
-    git clone <YOUR_REPOSITORY_URL_HERE>
+    git clone <https://github.com/AliouneDiagne/ridfix-ecommerce.git>
     cd ridfix-ecommerce
     ```
 
@@ -53,7 +53,7 @@ Follow these steps to get the Ridfix project up and running on your local machin
     Create a `.env` file in the project root and add the API URL.
 
     ```env
-    VITE_API_URL=http://localhost:3001
+    VITE_API_URL=http://localhost:3002
     ```
 
 4.  **Prepare Images**:
