@@ -527,22 +527,21 @@
       "discountPrice": 109.99
     }
   ],
- "brands": [
+  "brands": [
     { "id": 1, "name": "Polini", "logo": "/images/brand-logo-polini.png" },
     { "id": 2, "name": "Malossi", "logo": "/images/brand-logo-malossi.png" },
     { "id": 3, "name": "Piaggio", "logo": "/images/brand-logo-piaggio.png" },
     { "id": 4, "name": "Yamaha", "logo": "/images/brand-logo-yamaha.png" },
     { "id": 5, "name": "Aprilia", "logo": "/images/brand-logo-aprilia.png" }
   ],
-
   "orders": [],
   "users": [],
   "categories": [
-    "Engine",
-    "Bodywork",
-    "Accessories",
-    "Detergents",
-    "Tools",
-    "Electrical"
+    { "id": 1, "name": "Engine" },
+    { "id": 2, "name": "Bodywork" },
+    { "id": 3, "name": "Accessories" },
+    { "id": 4, "name": "Detergents" },
+    { "id": 5, "name": "Tools" },
+    { "id": 6, "name": "Electrical" }
   ]
 }

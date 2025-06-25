@@ -22,21 +22,21 @@ api.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          toast.error('Authentication failed. Please log in again.');
+          toast.error('Autenticazione fallita. Accedi di nuovo.');
           break;
         case 404:
-          toast.error('Resource not found.');
+          toast.error('Risorsa non trovata.');
           break;
         case 500:
-          toast.error('Server error. Please try again later.');
+          toast.error('Errore del server. Riprova più tardi.');
           break;
         default:
-          toast.error(`Error: ${error.response.statusText}`);
+          toast.error(`Errore: ${error.response.statusText}`);
       }
     } else if (error.request) {
-      toast.error('No response from server. Check your network or API server.');
+      toast.error('Nessuna risposta dal server. Controlla la connessione o se il server API è attivo.');
     } else {
-      toast.error(`Error: ${error.message}`);
+      toast.error(`Errore: ${error.message}`);
     }
     return Promise.reject(error);
   }
