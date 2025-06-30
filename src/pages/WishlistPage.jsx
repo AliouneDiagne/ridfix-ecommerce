@@ -7,8 +7,9 @@ import { fetchProducts } from '../store/slices/productsSlice';
 import { removeFromWishlist } from '../store/slices/wishlistSlice';
 import { addToCart } from '../store/slices/cartSlice';
 import ProductCard from '../components/products/ProductCard';
+import Spinner from '../components/ui/Spinner';    // se ne hai già uno
 
-/* ──────────────  layout  ────────────── */
+/* ---------- layout ---------- */
 const Container = styled.div`
   padding: 2rem;
 `;
@@ -50,24 +51,50 @@ const Empty = styled.div`
   padding: 4rem 0;
   color: ${({ theme }) => theme.colors.textLight};
 `;
-/* ────────────────────────────────────── */
+/* ---------------------------- */
 
 export default function WishlistPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  /* 1. L’array di ID salvato nello slice wishlist */
+  /* wishlist ids */
   const wishlistIds = useSelector((s) => s.wishlist.items);
 
-  /* 2. Carica i prodotti se non presenti */
-  const products = useSelector((s) => s.products.items);
-  useEffect(() => {
-    if (products.length === 0) dispatch(fetchProducts());
-  }, [dispatch, products.length]);
+  /* products slice */
+  const { items: products, status, error } = useSelector((s) => s.products);
 
-  /* 3. Prodotti effettivamente in wishlist */
+  /* fetch only when idle */
+  useEffect(() => {
+    if (status === 'idle') dispatch(fetchProducts());
+  }, [status, dispatch]);
+
+  /* derive wishlist products */
   const wishlistProducts = products.filter((p) => wishlistIds.includes(p.id));
 
+  /* loading state */
+  if (status === 'loading') {
+    return (
+      <Container>
+        <Title>Your Wishlist</Title>
+        <Spinner />
+      </Container>
+    );
+  }
+
+  /* error state */
+  if (status === 'failed') {
+    return (
+      <Container>
+        <Title>Your Wishlist</Title>
+        <Empty>
+          <p>Could not load products: {error}</p>
+          <Btn onClick={() => dispatch(fetchProducts())}>Retry</Btn>
+        </Empty>
+      </Container>
+    );
+  }
+
+  /* empty wishlist */
   if (wishlistProducts.length === 0) {
     return (
       <Container>
@@ -80,6 +107,7 @@ export default function WishlistPage() {
     );
   }
 
+  /* normal render */
   return (
     <Container>
       <Title>Your Wishlist</Title>

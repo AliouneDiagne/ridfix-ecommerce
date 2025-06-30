@@ -3,26 +3,28 @@
  *  – gestione prodotti, brand e prodotto selezionato
  * -----------------------------------------------------------*/
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/api';
+import api   from '../../api/api';
 import { toast } from 'react-toastify';
 
 /* ─────────────────────────────────────────────
  *  1. Helper – costruisci query string da filtri
+ *     • correzione filtro “solo disponibili”
  * ────────────────────────────────────────────*/
 function buildProductsQueryParams(filters = {}) {
   const params = new URLSearchParams();
 
-  if (filters.category)  params.append('category', filters.category);
-  if (filters.brand)     params.append('brand', filters.brand);
-  if (filters.minPrice)  params.append('price_gte', filters.minPrice);
-  if (filters.maxPrice)  params.append('price_lte', filters.maxPrice);
-  if (filters.search)    params.append('q', filters.search);
-  if (filters.inStockOnly !== undefined)
-    params.append('inStock', filters.inStockOnly ? 'true' : 'false');
+  if (filters.category) params.append('category', filters.category);
+  if (filters.brand)    params.append('brand', filters.brand);
+  if (filters.minPrice) params.append('price_gte', filters.minPrice);
+  if (filters.maxPrice) params.append('price_lte', filters.maxPrice);
+  if (filters.search)   params.append('q', filters.search);
+
+  /* ✅ usa _gte=1 per simulare “solo prodotti con stock ≥ 1” */
+  if (filters.inStockOnly) params.append('inStock_gte', '1');
 
   if (filters.sortBy) {
-    let order      = 'asc';
-    let sortField  = filters.sortBy;
+    let order     = 'asc';
+    let sortField = filters.sortBy;
 
     if (sortField.endsWith('_desc')) {
       sortField = sortField.replace('_desc', '');
@@ -40,22 +42,32 @@ function buildProductsQueryParams(filters = {}) {
 
 /* ─────────────────────────────────────────────
  *  2. Helper – normalizza formato prodotto
- *     • Converte `featured` → `isDiscounted`
- *     • Garantisce `discountPrice`
+ *     •  inStock ⇆ countInStock
+ *     •  numReviews
+ *     •  featured → isDiscounted
  * ────────────────────────────────────────────*/
 function normalizeProduct(raw) {
   const p = { ...raw };
 
-  // Se il vecchio schema usa "featured", traducilo
+  /* 🔄 2.1 unifica nomenclatura stock */
+  if (p.countInStock === undefined && p.inStock !== undefined) {
+    p.countInStock = p.inStock;
+  }
+  if (p.inStock === undefined && p.countInStock !== undefined) {
+    p.inStock = p.countInStock;
+  }
+
+  /* 🔢 2.2 calcola numero recensioni */
+  p.numReviews = Array.isArray(p.reviews) ? p.reviews.length : 0;
+
+  /* 💰 2.3 featured → isDiscounted + prezzo promo */
   if (p.featured === true && p.isDiscounted === undefined) {
-    p.isDiscounted  = true;
-    // Fallback discountPrice se manca
+    p.isDiscounted = true;
     if (p.discountPrice === undefined) {
-      p.discountPrice = +(p.price * 0.9).toFixed(2); // 10 % sconto di default
+      p.discountPrice = +(p.price * 0.9).toFixed(2); // –10 %
     }
   }
 
-  // 🔧 Puoi aggiungere qui altre normalizzazioni future
   return p;
 }
 
@@ -66,10 +78,10 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (filters, { rejectWithValue }) => {
     try {
-      const params    = buildProductsQueryParams(filters);
-      const { data }  = await api.get(`/products?${params.toString()}`);
+      const params   = buildProductsQueryParams(filters);
+      const { data } = await api.get(`/products?${params.toString()}`);
 
-      return data.map(normalizeProduct); // ← normalizza qui
+      return data.map(normalizeProduct);
     } catch (err) {
       const msg =
         err.response?.data?.message || 'Failed to fetch products.';
@@ -123,9 +135,9 @@ const initialState = {
   items:           [],
   brands:          [],
   selectedProduct: null,
-  status:          'idle',   // prodotti
+  status:          'idle',
   error:           null,
-  brandsStatus:    'idle',   // brand
+  brandsStatus:    'idle',
   brandsError:     null,
 };
 
@@ -143,7 +155,7 @@ const productsSlice = createSlice({
       state.selectedProduct = null;
     },
 
-    /* CRUD locale (demo) */
+    /* CRUD locale demo */
     addProduct(state, { payload }) {
       state.items.push(normalizeProduct(payload));
       toast.success('Product added successfully!');
@@ -164,51 +176,21 @@ const productsSlice = createSlice({
   extraReducers: (builder) => {
     /* fetchProducts */
     builder
-      .addCase(fetchProducts.pending, (state) => {
-        state.status = 'loading';
-        state.error  = null;
-      })
-      .addCase(fetchProducts.fulfilled, (state, { payload }) => {
-        state.status = 'succeeded';
-        state.items  = payload;
-      })
-      .addCase(fetchProducts.rejected, (state, { payload }) => {
-        state.status = 'failed';
-        state.error  = payload;
-        state.items  = [];
-      });
+      .addCase(fetchProducts.pending,  (s) => { s.status = 'loading';   s.error = null;       })
+      .addCase(fetchProducts.fulfilled,(s,{payload}) => { s.status='succeeded'; s.items=payload; })
+      .addCase(fetchProducts.rejected, (s,{payload}) => { s.status='failed';    s.error=payload; s.items=[];});
 
     /* fetchProductById */
     builder
-      .addCase(fetchProductById.pending, (state) => {
-        state.status          = 'loading';
-        state.error           = null;
-        state.selectedProduct = null;
-      })
-      .addCase(fetchProductById.fulfilled, (state, { payload }) => {
-        state.status          = 'succeeded';
-        state.selectedProduct = payload;
-      })
-      .addCase(fetchProductById.rejected, (state, { payload }) => {
-        state.status          = 'failed';
-        state.error           = payload;
-        state.selectedProduct = null;
-      });
+      .addCase(fetchProductById.pending,  (s) => { s.status='loading'; s.error=null; s.selectedProduct=null; })
+      .addCase(fetchProductById.fulfilled,(s,{payload}) => { s.status='succeeded'; s.selectedProduct=payload; })
+      .addCase(fetchProductById.rejected, (s,{payload}) => { s.status='failed';    s.error=payload; s.selectedProduct=null; });
 
     /* fetchBrands */
     builder
-      .addCase(fetchBrands.pending, (state) => {
-        state.brandsStatus = 'loading';
-        state.brandsError  = null;
-      })
-      .addCase(fetchBrands.fulfilled, (state, { payload }) => {
-        state.brandsStatus = 'succeeded';
-        state.brands       = payload;
-      })
-      .addCase(fetchBrands.rejected, (state, { payload }) => {
-        state.brandsStatus = 'failed';
-        state.brandsError  = payload;
-      });
+      .addCase(fetchBrands.pending,  (s) => { s.brandsStatus='loading'; s.brandsError=null; })
+      .addCase(fetchBrands.fulfilled,(s,{payload}) => { s.brandsStatus='succeeded'; s.brands=payload; })
+      .addCase(fetchBrands.rejected, (s,{payload}) => { s.brandsStatus='failed';    s.brandsError=payload; });
   },
 });
 
@@ -225,5 +207,5 @@ export const {
 
 export default productsSlice.reducer;
 
-/* Facoltativo: esporta helper per test */
+/* Facoltativo: helper per test */
 export { buildProductsQueryParams };

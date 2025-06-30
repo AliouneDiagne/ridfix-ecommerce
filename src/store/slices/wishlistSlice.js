@@ -1,58 +1,83 @@
+// src/store/slices/wishlistSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
-const loadWishlistState = () => {
+/* ------------------------------------------------------------------ */
+/*  Helpers: load / save da localStorage                              */
+/* ------------------------------------------------------------------ */
+const loadIds = () => {
   try {
-    const state = localStorage.getItem('wishlistState');
-    return state ? JSON.parse(state) : { items: {} };
+    const raw = localStorage.getItem('wishlistIds');
+    return raw ? JSON.parse(raw) : [];
   } catch {
-    return { items: {} };
+    return [];
   }
 };
 
-const saveWishlistState = (state) => {
+const saveIds = (ids) => {
   try {
-    localStorage.setItem('wishlistState', JSON.stringify(state));
+    localStorage.setItem('wishlistIds', JSON.stringify(ids));
   } catch (err) {
+     
     console.error('Wishlist save error:', err);
   }
 };
 
-const initialState = loadWishlistState();
+/* ------------------------------------------------------------------ */
+/*  Initial state                                                     */
+/* ------------------------------------------------------------------ */
+const initialState = {
+  ids: loadIds(), // array di numeri
+};
 
+/* ------------------------------------------------------------------ */
+/*  Slice                                                             */
+/* ------------------------------------------------------------------ */
 const wishlistSlice = createSlice({
   name: 'wishlist',
   initialState,
   reducers: {
-    toggleWishlist: (state, action) => {
-      const product = action.payload;
-      const id = product.id;
+    /* Add / remove toggle -------------------------------------------- */
+    toggleWishlist(state, action) {
+      const payload = action.payload;
+      const id = typeof payload === 'object' ? payload.id : payload;
 
-      if (state.items[id]) {
-        delete state.items[id];
-        toast.info(`"${product.name}" removed from wishlist.`);
+      if (state.ids.includes(id)) {
+        state.ids = state.ids.filter((x) => x !== id);
+        toast.info('Removed from wishlist.');
       } else {
-        state.items[id] = product;
-        toast.success(`"${product.name}" added to wishlist.`);
+        state.ids.push(id);
+        toast.success('Added to wishlist.');
       }
+      saveIds(state.ids);
+    },
 
-      saveWishlistState(state);
-    },
-    clearWishlist: (state) => {
-      state.items = {};
-      saveWishlistState(state);
-      toast.success('Wishlist cleared.');
-    },
-    removeFromWishlist: (state, action) => {
+    /* Remove explicit ------------------------------------------------ */
+    removeFromWishlist(state, action) {
       const id = action.payload;
-      if (state.items[id]) {
-        delete state.items[id];
+      if (state.ids.includes(id)) {
+        state.ids = state.ids.filter((x) => x !== id);
         toast.info('Item removed from wishlist.');
+        saveIds(state.ids);
       }
-      saveWishlistState(state);
+    },
+
+    /* Clear all ------------------------------------------------------ */
+    clearWishlist(state) {
+      state.ids = [];
+      saveIds(state.ids);
+      toast.success('Wishlist cleared.');
     },
   },
 });
 
-export const { toggleWishlist, clearWishlist, removeFromWishlist } = wishlistSlice.actions;
+
+export const selectWishlistIds = (state) => state.wishlist.ids;
+
+export const {
+  toggleWishlist,
+  removeFromWishlist,
+  clearWishlist,
+} = wishlistSlice.actions;
+
 export default wishlistSlice.reducer;

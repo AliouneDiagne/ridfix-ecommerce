@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -11,7 +12,7 @@ import store from './store/store';
 import SkipNav from './components/layout/SkipNav';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import PrivateRoute from './components/auth/PrivateRoute';   // ⇦ nuovo import
+import PrivateRoute from './components/auth/PrivateRoute';
 
 // Pagine lazy
 const HomePage      = lazy(() => import('./pages/HomePage'));
@@ -28,6 +29,8 @@ const AdminPage     = lazy(() => import('./pages/AdminPage'));
 const AboutPage     = lazy(() => import('./pages/AboutPage'));
 const ContactPage   = lazy(() => import('./pages/ContactPage'));
 const NotFoundPage  = lazy(() => import('./pages/NotFoundPage'));
+// ↓ lazy-load della nuova Policy page
+const PolicyPage    = lazy(() => import('./pages/Policy'));
 
 function App() {
   return (
@@ -44,7 +47,7 @@ function App() {
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/cart" element={<CartPage />} />
 
-              {/* ────────── PROTETTE ────────── */}
+              {/* ────────── ROTTE PROTETTE ────────── */}
               <Route
                 path="/wishlist"
                 element={
@@ -85,14 +88,17 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              {/* ────────────────────────────── */}
+              {/* ──────────────────────────────────── */}
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
 
-              {/* 404 */}
+              {/* ────────── NUOVA ROUTE POLICY ────────── */}
+              <Route path="/policy" element={<PolicyPage />} />
+
+              {/* 404 fallback */}
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

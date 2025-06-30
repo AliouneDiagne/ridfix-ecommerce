@@ -8,8 +8,7 @@
       "price": 249.99,
       "inStock": 15,
       "images": [
-        "/images/product-1.jpg",
-        "/images/product-1b.jpg"
+        "/images/product-1.jpg"
       ],
       "description": "High-performance racing exhaust for 50 cc scooters. Improves power and acceleration.",
       "specs": {
@@ -770,12 +769,6 @@
       "password": "user123",
       "role": "user",
       "firstName": "Alice"
-    },
-    {
-      "name": "Alioune",
-      "email": "Merlinognagne2006@gmail.com",
-      "password": "Allahou99!",
-      "id": 3
     }
   ],
   "orders": []
