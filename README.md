@@ -112,57 +112,47 @@ ridfix-ecommerce/
 ├── public/                 # Static assets (images, index.html)
 │   ├── images/             # Product images, brand logos
 │   └── index.html          # Main HTML file
-├── src/                    # Source code
-│   ├── api/                # Axios instance and API service calls
-│   │   └── api.js
-│   ├── assets/             # Global assets (e.g., global styles, fonts)
-│   │   ├── styles/
-│   │   │   └── GlobalStyle.js
-│   │   │   └── theme.js
-│   │   └── fonts/          # (Optional) Custom font files
-│   ├── components/         # Reusable UI components
-│   │   ├── admin/          # Admin-specific components (forms, lists)
-│   │   ├── auth/           # Authentication-related components (forms)
-│   │   ├── cart/           # Cart-specific components (item, summary)
-│   │   ├── checkout/       # Checkout-specific components (forms, stepper)
-│   │   ├── layout/         # Layout components (Navbar, Footer, SkipNav)
-│   │   ├── products/       # Product-related components (card, carousel, filters)
-│   │   └── ui/             # Generic UI components (Button, Input, Skeleton, Spinner)
-│   ├── data/               # Local JSON data for mock backend
-│   │   └── db.json         # Simulated database
-│   ├── hooks/              # Custom React Hooks
-│   │   ├── useAuth.js
-│   │   └── useLocalStorage.js
-│   ├── pages/              # Main application pages (routes)
-│   │   ├── admin/
-│   │   ├── auth/
-│   │   ├── checkout/
-│   │   ├── Home.jsx
-│   │   ├── CatalogPage.jsx
-│   │   ├── ProductDetailPage.jsx
-│   │   ├── CartPage.jsx
-│   │   ├── WishlistPage.jsx
-│   │   ├── ProfilePage.jsx
-│   │   ├── AboutPage.jsx
-│   │   ├── ContactPage.jsx
-│   │   └── NotFoundPage.jsx
-│   ├── routes/             # Route protection components
-│   │   ├── AdminRoute.jsx
-│   │   └── PrivateRoute.jsx
-│   ├── store/              # Redux store configuration
-│   │   ├── slices/         # Redux Slices (auth, cart, products, etc.)
-│   │   │   ├── authSlice.js
-│   │   │   ├── cartSlice.js
-│   │   │   ├── productsSlice.js
-│   │   │   ├── wishlistSlice.js
-│   │   │   ├── ordersSlice.js
-│   │   │   └── usersSlice.js
-│   │   └── store.js        # Redux store main file
-│   ├── utils/              # Utility functions (formatters, helpers)
-│   │   ├── debounce.js
-│   │   └── formatPrice.js
-│   ├── App.jsx             # Main application component (router setup)
-│   └── main.jsx            # Entry point for React application
+src/
+├── App.jsx
+├── index.css
+├── main.jsx
+├── api/
+│   └── api.js
+├── assets/ [react.svg, styles/GlobalStyle.js]
+├── components/
+│   ├── admin/    [AdminCard.jsx, AdminTable.jsx, OrderStatusDropdown.jsx, ProductForm.jsx, UserRoleSelect.jsx]
+│   ├── auth/     [AdminRoute.jsx, LoginForm.jsx, PrivateRoute.jsx, RegisterForm.jsx]
+│   ├── cart/     [CartItem.jsx, CartSummary.jsx]
+│   ├── checkout/ [PaymentForm.jsx, Review.jsx, ShippingForm.jsx, Stepper.jsx]
+│   ├── contact/  [ContactForm.jsx]
+│   ├── home/     [CategoryGrid.jsx, FeaturedProducts.jsx, HeroBanner.jsx]
+│   ├── layout/   [Footer.jsx, Navbar.jsx, SkipNav.jsx, ThemeToggle.jsx]
+│   ├── products/ [FiltersSidebar.jsx, ImageCarousel.jsx, ProductCard.jsx, ProductSpecsTabs.jsx, RelatedProducts.jsx, ReviewForm.jsx, ReviewSection.jsx, SearchBar.jsx, SingleReview.js, SortDropdown.jsx]
+│   └── ui/       [Button.jsx, Input.jsx, Skeleton.jsx, Spinner.jsx]
+├── contexts/     [ThemeContext.jsx, ThemeProvider.jsx]
+├── data/         [db.json]
+├── hooks/        [useAuth.js, useLocalStorage.js]
+├── pages/
+│   ├── AboutPage.jsx
+│   ├── AdminPage.jsx
+│   ├── CartPage.jsx
+│   ├── CatalogPage.jsx
+│   ├── ContactPage.jsx
+│   ├── HomePage.jsx
+│   ├── LoginPage.jsx
+│   ├── NotFoundPage.jsx
+│   ├── Policy.jsx
+│   ├── ProductPage.jsx
+│   ├── ProfilePage.jsx
+│   ├── RegisterPage.jsx
+│   ├── WishlistPage.jsx
+│   └── checkout/ [CheckoutPage.jsx, SuccessPage.jsx]
+├── store/
+│   ├── store.js
+│   └── slices/ [authSlice.js, cartSlice.js, filtersSlice.js, ordersSlice.js, paginationSlice.js, productsSlice.js, usersSlice.js, wishlistSlice.js]
+├── styles/       [GlobalStyle.js, theme.js]
+└── utils/        [debounce.js, formatPrice.js]
+       # Entry point for React application
 ├── .eslintrc.js            # ESLint configuration
 ├── .eslintignore           # Files/folders to ignore for ESLint
 ├── .prettierrc             # Prettier configuration
