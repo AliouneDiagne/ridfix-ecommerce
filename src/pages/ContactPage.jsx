@@ -1,16 +1,21 @@
+// src/pages/ContactPage.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Calendar from 'react-calendar';
+import DateTimePicker from 'react-datetime-picker';
 import 'react-calendar/dist/Calendar.css';
+import 'react-datetime-picker/dist/DateTimePicker.css';
 import { toast } from 'react-toastify';
+import { FaUser, FaEnvelope, FaPhone } from 'react-icons/fa';
 
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
-// --- Styled Components ---
+/* ------------------------------------------------------------------ */
+/*  Styled                                                            */
+/* ------------------------------------------------------------------ */
 const ContactContainer = styled.div`
   padding: ${({ theme }) => theme.spacing(4)};
   max-width: 800px;
@@ -48,38 +53,82 @@ const FullWidth = styled.div`
   grid-column: 1 / -1;
 `;
 
-const CalendarWrapper = styled(FullWidth)`
+const Select = styled.select`
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  font: inherit;
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const SelectLabel = styled.label`
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+`;
+
+const DateTimeWrapper = styled(FullWidth)`
+  .react-datetime-picker {
+    width: 100%;
+  }
   .react-calendar {
     border: 1px solid ${({ theme }) => theme.colors.border};
     border-radius: ${({ theme }) => theme.borderRadius};
-    font-family: inherit;
-    width: 100%;
-    background-color: ${({ theme }) => theme.colors.surface};
+    background: ${({ theme }) => theme.colors.surface};
     color: ${({ theme }) => theme.colors.text};
   }
-  .react-calendar__navigation button {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-  .react-calendar__tile--active {
-    background: ${({ theme }) => theme.colors.primary} !important;
-    color: ${({ theme }) => theme.colors.onPrimary} !important;
+  .react-datetime-picker__wrapper {
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    border-radius: ${({ theme }) => theme.borderRadius};
+    padding: 0.5rem;
   }
 `;
 
-// --- Validazione con Yup ---
+/* ------------------------------------------------------------------ */
+/*  Constants                                                         */
+/* ------------------------------------------------------------------ */
+const SUBJECTS = [
+  'Product Inquiry',
+  'Order Status',
+  'Technical Support',
+  'Return / Exchange',
+  'Other',
+];
+
+const SERVICES = [
+  'Maintenance',
+  'Performance Tuning',
+  'Custom Build',
+  'Diagnostics',
+  'Consultation',
+];
+
+/* ------------------------------------------------------------------ */
+/*  Validation schema                                                 */
+/* ------------------------------------------------------------------ */
 const schema = yup.object({
   name: yup.string().max(100, 'Name cannot exceed 100 characters'),
-  email: yup.string().email('Invalid email format').required('Email is required'),
-  phone: yup.string().required('Phone number is required').matches(/^[0-9\s-()+.ext]+$/, 'Invalid phone number format'),
+  email: yup
+    .string()
+    .email('Invalid email format')
+    .required('Email is required'),
+  phone: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^[0-9\s\-()+.ext]+$/, 'Invalid phone number format'),
+  subject: yup.string().required('Please choose a subject'),
+  service: yup.string().required('Please choose a service'),
   message: yup.string().max(500, 'Message cannot exceed 500 characters'),
 });
 
-/**
- * ContactPage Component
- * Form per contatto o prenotazione, con calendario integrato.
- */
+/* ------------------------------------------------------------------ */
+/*  Component                                                         */
+/* ------------------------------------------------------------------ */
 export default function ContactPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [appointmentDate, setAppointmentDate] = useState(new Date());
+
   const {
     register,
     handleSubmit,
@@ -87,15 +136,22 @@ export default function ContactPage() {
     reset,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      subject: SUBJECTS[0],
+      service: SERVICES[0],
+    },
   });
 
   const onSubmit = async (data) => {
-    return new Promise((resolve) => {
+    await new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Submitted:', { ...data, appointmentDate: selectedDate.toISOString().split('T')[0] });
+        console.log('Submitted:', {
+          ...data,
+          appointmentDate: appointmentDate.toISOString(),
+        });
         toast.success('Thank you! We will contact you shortly.');
         reset();
-        setSelectedDate(new Date());
+        setAppointmentDate(new Date());
         resolve();
       }, 1500);
     });
@@ -103,54 +159,102 @@ export default function ContactPage() {
 
   return (
     <ContactContainer>
-      <Title>Contact Us</Title>
+      <Title>Contact&nbsp;Us</Title>
       <Subtitle>
-        Need help choosing a part or booking an appointment? Fill out the form and we’ll assist you shortly.
+        Need help choosing a part or booking an appointment? Fill out the form
+        and we’ll assist you shortly.
       </Subtitle>
+
       <FormGrid onSubmit={handleSubmit(onSubmit)}>
+        {/* ------------ Name ------------- */}
         <Input
           label="Your Name (Optional)"
           type="text"
-          name="name"
+          icon={<FaUser />}
           {...register('name')}
           error={errors.name?.message}
         />
+
+        {/* ------------ Email ------------- */}
         <Input
           label="Email"
           type="email"
-          name="email"
+          icon={<FaEnvelope />}
           {...register('email')}
           error={errors.email?.message}
           required
         />
+
+        {/* ------------ Phone ------------- */}
         <Input
           label="Phone Number"
           type="tel"
-          name="phone"
+          icon={<FaPhone />}
           {...register('phone')}
           error={errors.phone?.message}
           required
         />
+
+        {/* ------------ Subject ------------- */}
+        <div>
+          <SelectLabel htmlFor="subject">Subject</SelectLabel>
+          <Select id="subject" {...register('subject')}>
+            {SUBJECTS.map((opt) => (
+              <option value={opt} key={opt}>
+                {opt}
+              </option>
+            ))}
+          </Select>
+          {errors.subject && (
+            <small style={{ color: 'red' }}>{errors.subject.message}</small>
+          )}
+        </div>
+
+        {/* ------------ Service ------------- */}
+        <div>
+          <SelectLabel htmlFor="service">Service Required</SelectLabel>
+          <Select id="service" {...register('service')}>
+            {SERVICES.map((opt) => (
+              <option value={opt} key={opt}>
+                {opt}
+              </option>
+            ))}
+          </Select>
+          {errors.service && (
+            <small style={{ color: 'red' }}>{errors.service.message}</small>
+          )}
+        </div>
+
+        {/* ------------ Message ------------- */}
         <FullWidth>
-          <label>Message / Appointment Details (Optional)</label>
+          <SelectLabel htmlFor="message">
+            Message / Appointment Details (Optional)
+          </SelectLabel>
           <Input
             as="textarea"
-            name="message"
+            id="message"
             rows="4"
             {...register('message')}
             error={errors.message?.message}
           />
         </FullWidth>
-        <CalendarWrapper>
-          <label>Preferred Appointment Date</label>
-          <Calendar
-            onChange={setSelectedDate}
-            value={selectedDate}
+
+        {/* ------------ Date-Time Picker ------------- */}
+        <DateTimeWrapper>
+          <SelectLabel>Preferred Appointment Date &amp; Time</SelectLabel>
+          <DateTimePicker
+            onChange={setAppointmentDate}
+            value={appointmentDate}
+            format="dd/MM/yyyy HH:mm"
+            locale="en-GB"
+            disableClock={false}
           />
-        </CalendarWrapper>
+        </DateTimeWrapper>
+
+        {/* ------------ Submit ------------- */}
         <FullWidth>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Sending...' : 'Submit Request'}
+            {isSubmitting ? 'Sending…' : 'Submit Request'}
           </Button>
         </FullWidth>
       </FormGrid>

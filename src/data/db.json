@@ -7,7 +7,10 @@
       "brand": "Malossi",
       "price": 249.99,
       "inStock": 15,
-      "images": ["/images/product-1.jpg", "/images/product-1b.jpg"],
+      "images": [
+        "/images/product-1.jpg",
+        "/images/product-1b.jpg"
+      ],
       "description": "High-performance racing exhaust for 50 cc scooters. Improves power and acceleration.",
       "specs": {
         "material": "Steel",
@@ -16,7 +19,12 @@
       },
       "rating": 4.8,
       "reviews": [
-        { "id": 1, "name": "Luca V.", "rating": 5, "comment": "Amazing sound and power!" }
+        {
+          "id": 1,
+          "name": "Luca V.",
+          "rating": 5,
+          "comment": "Amazing sound and power!"
+        }
       ],
       "featured": true,
       "discountPrice": 229.99
@@ -26,9 +34,11 @@
       "name": "Polini Air Filter Sponge",
       "category": "Engine",
       "brand": "Polini",
-      "price": 149.90,
+      "price": 149.9,
       "inStock": 50,
-      "images": ["/images/product-2.jpg"],
+      "images": [
+        "/images/product-2.jpg"
+      ],
       "description": "Replacement sponge for Polini air filters. Ensures optimal airflow and filtration.",
       "specs": {
         "material": "Foam",
@@ -37,7 +47,12 @@
       },
       "rating": 4.5,
       "reviews": [
-        { "id": 2, "name": "Marco G.", "rating": 4, "comment": "Good quality, easy to replace." }
+        {
+          "id": 2,
+          "name": "Marco G.",
+          "rating": 4,
+          "comment": "Good quality, easy to replace."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -49,7 +64,9 @@
       "brand": "Piaggio",
       "price": 29.99,
       "inStock": 25,
-      "images": ["/images/product-3.jpg"],
+      "images": [
+        "/images/product-3.jpg"
+      ],
       "description": "Genuine Piaggio front brake pads. Reliable braking performance.",
       "specs": {
         "material": "Semi-metallic",
@@ -58,7 +75,12 @@
       },
       "rating": 4.7,
       "reviews": [
-        { "id": 3, "name": "Giulia P.", "rating": 5, "comment": "Perfect fit, great braking." }
+        {
+          "id": 3,
+          "name": "Giulia P.",
+          "rating": 5,
+          "comment": "Perfect fit, great braking."
+        }
       ],
       "featured": true,
       "discountPrice": 24.99
@@ -70,7 +92,9 @@
       "brand": "Yamaha",
       "price": 79.99,
       "inStock": 10,
-      "images": ["/images/product-4.jpg"],
+      "images": [
+        "/images/product-4.jpg"
+      ],
       "description": "Bright LED tail light for Yamaha NMAX. Improves visibility.",
       "specs": {
         "type": "LED",
@@ -79,7 +103,12 @@
       },
       "rating": 4.6,
       "reviews": [
-        { "id": 4, "name": "Andrea R.", "rating": 5, "comment": "Looks amazing, very bright." }
+        {
+          "id": 4,
+          "name": "Andrea R.",
+          "rating": 5,
+          "comment": "Looks amazing, very bright."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -91,7 +120,9 @@
       "brand": "Aprilia",
       "price": 39.99,
       "inStock": 20,
-      "images": ["/images/product-5.jpg"],
+      "images": [
+        "/images/product-5.jpg"
+      ],
       "description": "Durable bolt-on side stand for Aprilia SR 50.",
       "specs": {
         "material": "Steel",
@@ -100,7 +131,12 @@
       },
       "rating": 4.3,
       "reviews": [
-        { "id": 5, "name": "Fabio D.", "rating": 4, "comment": "Sturdy and practical." }
+        {
+          "id": 5,
+          "name": "Fabio D.",
+          "rating": 4,
+          "comment": "Sturdy and practical."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -112,7 +148,9 @@
       "brand": "Malossi",
       "price": 19.99,
       "inStock": 30,
-      "images": ["/images/product-6.jpg"],
+      "images": [
+        "/images/product-6.jpg"
+      ],
       "description": "Performance roller weights for Malossi variators.",
       "specs": {
         "material": "Nylon",
@@ -121,7 +159,12 @@
       },
       "rating": 4.6,
       "reviews": [
-        { "id": 6, "name": "Riccardo M.", "rating": 5, "comment": "Improved acceleration instantly!" }
+        {
+          "id": 6,
+          "name": "Riccardo M.",
+          "rating": 5,
+          "comment": "Improved acceleration instantly!"
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -133,7 +176,9 @@
       "brand": "Polini",
       "price": 129.99,
       "inStock": 10,
-      "images": ["/images/product-7.jpg"],
+      "images": [
+        "/images/product-7.jpg"
+      ],
       "description": "Complete variator kit for Honda SH 150.",
       "specs": {
         "material": "Aluminium",
@@ -142,10 +187,15 @@
       },
       "rating": 4.9,
       "reviews": [
-        { "id": 7, "name": "Elena B.", "rating": 5, "comment": "Scooter feels brand new!" }
+        {
+          "id": 7,
+          "name": "Elena B.",
+          "rating": 5,
+          "comment": "Scooter feels brand new!"
+        }
       ],
       "featured": true,
-      "discountPrice": 110.00
+      "discountPrice": 110
     },
     {
       "id": 8,
@@ -154,7 +204,9 @@
       "brand": "Piaggio",
       "price": 59.99,
       "inStock": 18,
-      "images": ["/images/product-8.jpg"],
+      "images": [
+        "/images/product-8.jpg"
+      ],
       "description": "Original headlight assembly for Piaggio Zip 50.",
       "specs": {
         "type": "Halogen",
@@ -163,7 +215,12 @@
       },
       "rating": 4.4,
       "reviews": [
-        { "id": 8, "name": "Paolo F.", "rating": 4, "comment": "Easy replacement part." }
+        {
+          "id": 8,
+          "name": "Paolo F.",
+          "rating": 4,
+          "comment": "Easy replacement part."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -175,7 +232,9 @@
       "brand": "Yamaha",
       "price": 89.99,
       "inStock": 8,
-      "images": ["/images/product-9.jpg"],
+      "images": [
+        "/images/product-9.jpg"
+      ],
       "description": "Sport windshield for Yamaha XMAX 300/400.",
       "specs": {
         "material": "Polycarbonate",
@@ -184,7 +243,12 @@
       },
       "rating": 4.7,
       "reviews": [
-        { "id": 9, "name": "Sara C.", "rating": 5, "comment": "Great look and wind protection." }
+        {
+          "id": 9,
+          "name": "Sara C.",
+          "rating": 5,
+          "comment": "Great look and wind protection."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -196,7 +260,9 @@
       "brand": "Aprilia",
       "price": 69.99,
       "inStock": 12,
-      "images": ["/images/product-10.jpg"],
+      "images": [
+        "/images/product-10.jpg"
+      ],
       "description": "Adjustable CNC levers for Aprilia scooters.",
       "specs": {
         "material": "CNC Aluminium",
@@ -205,10 +271,15 @@
       },
       "rating": 4.8,
       "reviews": [
-        { "id": 10, "name": "Giovanni Z.", "rating": 5, "comment": "Fantastic quality and feel." }
+        {
+          "id": 10,
+          "name": "Giovanni Z.",
+          "rating": 5,
+          "comment": "Fantastic quality and feel."
+        }
       ],
       "featured": true,
-      "discountPrice": 60.00
+      "discountPrice": 60
     },
     {
       "id": 11,
@@ -217,7 +288,9 @@
       "brand": "Malossi",
       "price": 59.99,
       "inStock": 22,
-      "images": ["/images/product-11.jpg"],
+      "images": [
+        "/images/product-11.jpg"
+      ],
       "description": "Reinforced clutch bell, reduces vibration.",
       "specs": {
         "material": "Steel",
@@ -226,7 +299,12 @@
       },
       "rating": 4.5,
       "reviews": [
-        { "id": 11, "name": "Laura D.", "rating": 4, "comment": "Noticeable launch improvement." }
+        {
+          "id": 11,
+          "name": "Laura D.",
+          "rating": 4,
+          "comment": "Noticeable launch improvement."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -238,7 +316,9 @@
       "brand": "Polini",
       "price": 89.99,
       "inStock": 9,
-      "images": ["/images/product-12.jpg"],
+      "images": [
+        "/images/product-12.jpg"
+      ],
       "description": "Racing clutch with adjustable engagement.",
       "specs": {
         "material": "Aluminium / Steel",
@@ -247,10 +327,15 @@
       },
       "rating": 4.9,
       "reviews": [
-        { "id": 12, "name": "Davide S.", "rating": 5, "comment": "Best clutch for racing setups." }
+        {
+          "id": 12,
+          "name": "Davide S.",
+          "rating": 5,
+          "comment": "Best clutch for racing setups."
+        }
       ],
       "featured": true,
-      "discountPrice": 79.00
+      "discountPrice": 79
     },
     {
       "id": 13,
@@ -259,7 +344,9 @@
       "brand": "Piaggio",
       "price": 34.99,
       "inStock": 17,
-      "images": ["/images/product-13.jpg"],
+      "images": [
+        "/images/product-13.jpg"
+      ],
       "description": "Vinyl seat cover for Piaggio Liberty 125.",
       "specs": {
         "material": "Vinyl",
@@ -268,7 +355,12 @@
       },
       "rating": 4.2,
       "reviews": [
-        { "id": 13, "name": "Sofia L.", "rating": 4, "comment": "Fits well, nice finish." }
+        {
+          "id": 13,
+          "name": "Sofia L.",
+          "rating": 4,
+          "comment": "Fits well, nice finish."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -280,7 +372,9 @@
       "brand": "Yamaha",
       "price": 119.99,
       "inStock": 7,
-      "images": ["/images/product-14.jpg"],
+      "images": [
+        "/images/product-14.jpg"
+      ],
       "description": "Original Dell'Orto carburettor for Aerox 50.",
       "specs": {
         "type": "Dell'Orto",
@@ -289,7 +383,12 @@
       },
       "rating": 4.6,
       "reviews": [
-        { "id": 14, "name": "Matteo V.", "rating": 5, "comment": "Solved idling issues." }
+        {
+          "id": 14,
+          "name": "Matteo V.",
+          "rating": 5,
+          "comment": "Solved idling issues."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -301,16 +400,23 @@
       "brand": "Aprilia",
       "price": 24.99,
       "inStock": 30,
-      "images": ["/images/product-15.jpg"],
+      "images": [
+        "/images/product-15.jpg"
+      ],
       "description": "Right-side mirror for Aprilia Scarabeo 200.",
       "specs": {
         "side": "Right",
         "material": "Plastic / Glass",
         "compatibility": "Aprilia Scarabeo 200"
       },
-      "rating": 4.0,
+      "rating": 4,
       "reviews": [
-        { "id": 15, "name": "Chiara B.", "rating": 4, "comment": "Exact replacement part." }
+        {
+          "id": 15,
+          "name": "Chiara B.",
+          "rating": 4,
+          "comment": "Exact replacement part."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -322,7 +428,9 @@
       "brand": "Malossi",
       "price": 189.99,
       "inStock": 5,
-      "images": ["/images/product-16.jpg"],
+      "images": [
+        "/images/product-16.jpg"
+      ],
       "description": "Cast-iron 70 cc kit for big power gains.",
       "specs": {
         "material": "Cast Iron",
@@ -331,7 +439,12 @@
       },
       "rating": 4.8,
       "reviews": [
-        { "id": 16, "name": "Antonio S.", "rating": 5, "comment": "Huge power increase." }
+        {
+          "id": 16,
+          "name": "Antonio S.",
+          "rating": 5,
+          "comment": "Huge power increase."
+        }
       ],
       "featured": true,
       "discountPrice": 169.99
@@ -343,7 +456,9 @@
       "brand": "Polini",
       "price": 99.99,
       "inStock": 12,
-      "images": ["/images/product-17.jpg"],
+      "images": [
+        "/images/product-17.jpg"
+      ],
       "description": "Lightweight 19 mm racing carburettor.",
       "specs": {
         "bore": "19 mm",
@@ -352,7 +467,12 @@
       },
       "rating": 4.7,
       "reviews": [
-        { "id": 17, "name": "Vincenzo N.", "rating": 5, "comment": "Perfect on my 70 cc setup." }
+        {
+          "id": 17,
+          "name": "Vincenzo N.",
+          "rating": 5,
+          "comment": "Perfect on my 70 cc setup."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -364,7 +484,9 @@
       "brand": "Piaggio",
       "price": 19.99,
       "inStock": 40,
-      "images": ["/images/product-18.jpg"],
+      "images": [
+        "/images/product-18.jpg"
+      ],
       "description": "Chrome grill for Vespa Primavera/Sprint.",
       "specs": {
         "material": "Chrome Steel",
@@ -373,7 +495,12 @@
       },
       "rating": 4.1,
       "reviews": [
-        { "id": 18, "name": "Francesca T.", "rating": 4, "comment": "Looks good, quick delivery." }
+        {
+          "id": 18,
+          "name": "Francesca T.",
+          "rating": 4,
+          "comment": "Looks good, quick delivery."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -385,7 +512,9 @@
       "brand": "Yamaha",
       "price": 49.99,
       "inStock": 8,
-      "images": ["/images/product-19.jpg"],
+      "images": [
+        "/images/product-19.jpg"
+      ],
       "description": "Genuine oil pump for Aerox 50.",
       "specs": {
         "type": "Original",
@@ -394,7 +523,12 @@
       },
       "rating": 4.5,
       "reviews": [
-        { "id": 19, "name": "Antonio P.", "rating": 5, "comment": "Solved lubrication issues." }
+        {
+          "id": 19,
+          "name": "Antonio P.",
+          "rating": 5,
+          "comment": "Solved lubrication issues."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -406,7 +540,9 @@
       "brand": "Aprilia",
       "price": 149.99,
       "inStock": 3,
-      "images": ["/images/product-20.jpg"],
+      "images": [
+        "/images/product-20.jpg"
+      ],
       "description": "Left front fairing for Aprilia RS 125.",
       "specs": {
         "side": "Left",
@@ -414,9 +550,14 @@
         "color": "Black",
         "compatibility": "Aprilia RS 125"
       },
-      "rating": 4.0,
+      "rating": 4,
       "reviews": [
-        { "id": 20, "name": "Roberto Q.", "rating": 3, "comment": "Needed slight adjustment." }
+        {
+          "id": 20,
+          "name": "Roberto Q.",
+          "rating": 3,
+          "comment": "Needed slight adjustment."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -428,7 +569,9 @@
       "brand": "Malossi",
       "price": 79.99,
       "inStock": 10,
-      "images": ["/images/product-21.jpg"],
+      "images": [
+        "/images/product-21.jpg"
+      ],
       "description": "Long-ratio primary gear for higher top speed.",
       "specs": {
         "ratio": "Longer",
@@ -437,7 +580,12 @@
       },
       "rating": 4.7,
       "reviews": [
-        { "id": 21, "name": "Simone D.", "rating": 5, "comment": "Noticeable top-speed gain." }
+        {
+          "id": 21,
+          "name": "Simone D.",
+          "rating": 5,
+          "comment": "Noticeable top-speed gain."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -449,7 +597,9 @@
       "brand": "Polini",
       "price": 19.99,
       "inStock": 50,
-      "images": ["/images/product-22.jpg"],
+      "images": [
+        "/images/product-22.jpg"
+      ],
       "description": "Assorted main jets for Dell'Orto carbs.",
       "specs": {
         "sizes": "Varied",
@@ -458,7 +608,12 @@
       },
       "rating": 4.4,
       "reviews": [
-        { "id": 22, "name": "Leo C.", "rating": 4, "comment": "Great range of sizes." }
+        {
+          "id": 22,
+          "name": "Leo C.",
+          "rating": 4,
+          "comment": "Great range of sizes."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -470,7 +625,9 @@
       "brand": "Piaggio",
       "price": 49.99,
       "inStock": 15,
-      "images": ["/images/product-23.jpg"],
+      "images": [
+        "/images/product-23.jpg"
+      ],
       "description": "Kevlar-reinforced drive belt for MP3 300/350.",
       "specs": {
         "material": "Kevlar",
@@ -479,7 +636,12 @@
       },
       "rating": 4.6,
       "reviews": [
-        { "id": 23, "name": "Giuseppe A.", "rating": 5, "comment": "Runs smooth again." }
+        {
+          "id": 23,
+          "name": "Giuseppe A.",
+          "rating": 5,
+          "comment": "Runs smooth again."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -491,7 +653,9 @@
       "brand": "Yamaha",
       "price": 179.99,
       "inStock": 6,
-      "images": ["/images/product-24.jpg"],
+      "images": [
+        "/images/product-24.jpg"
+      ],
       "description": "Sport exhaust for Aerox 50, road legal (restricted).",
       "specs": {
         "material": "Steel",
@@ -500,7 +664,12 @@
       },
       "rating": 4.7,
       "reviews": [
-        { "id": 24, "name": "Elisa P.", "rating": 5, "comment": "Great sound, easy install." }
+        {
+          "id": 24,
+          "name": "Elisa P.",
+          "rating": 5,
+          "comment": "Great sound, easy install."
+        }
       ],
       "featured": false,
       "discountPrice": null
@@ -512,7 +681,9 @@
       "brand": "Aprilia",
       "price": 129.99,
       "inStock": 4,
-      "images": ["/images/product-25.jpg"],
+      "images": [
+        "/images/product-25.jpg"
+      ],
       "description": "Back-lit LCD speedometer for Aprilia SR 50.",
       "specs": {
         "display": "LCD",
@@ -521,34 +692,91 @@
       },
       "rating": 4.5,
       "reviews": [
-        { "id": 25, "name": "Federico R.", "rating": 4, "comment": "Modern look, all info in one place." }
+        {
+          "id": 25,
+          "name": "Federico R.",
+          "rating": 4,
+          "comment": "Modern look, all info in one place."
+        }
       ],
       "featured": false,
       "discountPrice": 109.99
     }
   ],
-
   "brands": [
-    { "id": 1, "name": "Polini",  "logo": "/images/brand-logo-polini.png" },
-    { "id": 2, "name": "Malossi", "logo": "/images/brand-logo-malossi.png" },
-    { "id": 3, "name": "Piaggio", "logo": "/images/brand-logo-piaggio.png" },
-    { "id": 4, "name": "Yamaha",  "logo": "/images/brand-logo-yamaha.png" },
-    { "id": 5, "name": "Aprilia", "logo": "/images/brand-logo-aprilia.png" }
+    {
+      "id": 1,
+      "name": "Polini",
+      "logo": "/images/brand-logo-polini.png"
+    },
+    {
+      "id": 2,
+      "name": "Malossi",
+      "logo": "/images/brand-logo-malossi.png"
+    },
+    {
+      "id": 3,
+      "name": "Piaggio",
+      "logo": "/images/brand-logo-piaggio.png"
+    },
+    {
+      "id": 4,
+      "name": "Yamaha",
+      "logo": "/images/brand-logo-yamaha.png"
+    },
+    {
+      "id": 5,
+      "name": "Aprilia",
+      "logo": "/images/brand-logo-aprilia.png"
+    }
   ],
-
   "categories": [
-    { "id": 1, "name": "Engine" },
-    { "id": 2, "name": "Bodywork" },
-    { "id": 3, "name": "Accessories" },
-    { "id": 4, "name": "Detergents" },
-    { "id": 5, "name": "Tools" },
-    { "id": 6, "name": "Electrical" }
+    {
+      "id": 1,
+      "name": "Engine"
+    },
+    {
+      "id": 2,
+      "name": "Bodywork"
+    },
+    {
+      "id": 3,
+      "name": "Accessories"
+    },
+    {
+      "id": 4,
+      "name": "Detergents"
+    },
+    {
+      "id": 5,
+      "name": "Tools"
+    },
+    {
+      "id": 6,
+      "name": "Electrical"
+    }
   ],
-
   "users": [
-    { "id": 1, "email": "admin@ridfix.io", "password": "admin123", "role": "admin", "firstName": "Admin" },
-    { "id": 2, "email": "user@ridfix.io",  "password": "user123",  "role": "user",  "firstName": "Alice" }
+    {
+      "id": 1,
+      "email": "admin@ridfix.io",
+      "password": "admin123",
+      "role": "admin",
+      "firstName": "Admin"
+    },
+    {
+      "id": 2,
+      "email": "user@ridfix.io",
+      "password": "user123",
+      "role": "user",
+      "firstName": "Alice"
+    },
+    {
+      "name": "Alioune",
+      "email": "Merlinognagne2006@gmail.com",
+      "password": "Allahou99!",
+      "id": 3
+    }
   ],
-
   "orders": []
 }

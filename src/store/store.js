@@ -1,26 +1,41 @@
-import { configureStore } from '@reduxjs/toolkit';
+// src/store/store.js
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-// Importa tutti i reducer degli slices
-import authReducer from './slices/authSlice';
-import productsReducer from './slices/productsSlice';
-import cartReducer from './slices/cartSlice';
-import wishlistReducer from './slices/wishlistSlice';
-import ordersReducer from './slices/ordersSlice';
-import usersReducer from './slices/usersSlice';
+/* ─────────────  slices  ───────────── */
+import authReducer      from './slices/authSlice';
+import productsReducer  from './slices/productsSlice';
+import cartReducer      from './slices/cartSlice';
+import wishlistReducer  from './slices/wishlistSlice';
+import ordersReducer    from './slices/ordersSlice';
+import usersReducer     from './slices/usersSlice';
 
-// Configura lo store Redux
-const store = configureStore({
-  reducer: {
-    // Ogni chiave qui corrisponde a una parte dello stato globale
-    auth: authReducer, // Stato di autenticazione
-    products: productsReducer, // Stato dei prodotti
-    cart: cartReducer, // Stato del carrello
-    wishlist: wishlistReducer, // Stato della wishlist
-    orders: ordersReducer, // Stato degli ordini (per admin)
-    users: usersReducer, // Stato degli utenti (per admin, include anche currentUser di login)
-  },
-  // DevTools sono inclusi di default con Redux Toolkit
-  // Middleware di Redux Thunk è incluso di default per gestire azioni asincrone
+/* ─────────────  root reducer  ─────── */
+const rootReducer = combineReducers({
+  auth:      authReducer,
+  products:  productsReducer,
+  cart:      cartReducer,
+  wishlist:  wishlistReducer,
+  orders:    ordersReducer,
+  users:     usersReducer,
 });
 
-export default store; // Esporta lo store configurato
+/* ─────────────  persist config  ───── */
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth', 'cart', 'wishlist'],   // ⬅️ ciò che vuoi salvare
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+/* ─────────────  store  ────────────── */
+const store = configureStore({
+  reducer: persistedReducer,
+  // middleware default di RTK già include thunk + serializableCheck
+  // serializableCheck ignora redux-persist di default, quindi OK
+});
+
+export const persistor = persistStore(store);
+export default store;

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import api from '../api/api';
 import ProductCard from '../components/products/ProductCard';
 import Spinner from '../components/ui/Spinner';
 
-const Container = styled.div`
+/* ---------- layout ---------- */
+
+const Page = styled.div`
   display: flex;
   gap: 2rem;
   padding: 2rem;
@@ -17,12 +19,20 @@ const Sidebar = styled.aside`
   gap: 1.5rem;
 `;
 
-const Section = styled.div``;
+const Main = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
 
-const Title = styled.h2`
-  margin-bottom: .5rem;
+/* ---------- typography ---------- */
+
+const Heading = styled.h2`
+  margin-bottom: 0.5rem;
   color: ${({ theme }) => theme.colors.text};
 `;
+
+/* ---------- lists ---------- */
 
 const List = styled.ul`
   list-style: none;
@@ -30,135 +40,193 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-  margin: .5rem 0;
+  margin: 0.5rem 0;
   cursor: pointer;
-  color: ${({ $active, theme }) => $active ? theme.colors.primary : theme.colors.text};
+  color: ${({ $active, theme }) =>
+    $active ? theme.colors.primary : theme.colors.text};
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
-const SortButton = styled.button`
+/* ---------- buttons ---------- */
+
+const TextButton = styled.button`
   background: none;
   border: none;
+  padding: 0;
   cursor: pointer;
-  display: block;
-  margin: .25rem 0;
+  margin: 0.25rem 0;
   color: ${({ theme }) => theme.colors.text};
-  &:hover { color: ${({ theme }) => theme.colors.primary}; }
+  font: inherit;
+  text-align: left;
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
-const Grid = styled.div`
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-  gap: 1.5rem;
-`;
+/* ---------- inputs ---------- */
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   margin-bottom: 1rem;
 `;
 
+/* ---------- grid ---------- */
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+`;
+
+/* ---------- component ---------- */
+
 export default function CatalogPage() {
+  /* data ------------------------------------------------------------------ */
   const [products, setProducts] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [activeCat, setActiveCat] = useState('All Products');
-  const [sort, setSort] = useState(null);
-  const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState(['All Products']);
   const [loading, setLoading] = useState(true);
 
+  /* ui state -------------------------------------------------------------- */
+  const [activeCategory, setActiveCategory] = useState('All Products');
+  const [sort, setSort] = useState(null); // null | low | high | az | za
+  const [searchQuery, setSearchQuery] = useState('');
+
+  /* fetch data once ------------------------------------------------------- */
   useEffect(() => {
-    console.log('🔍 Fetching products…');
-    Promise.all([
-      api.get('/products'),
-      api.get('/categories')
-    ]).then(([pRes, cRes]) => {
-      console.log('✅ Products:', pRes.data.length, 'Categories:', cRes.data.length);
-      setProducts(pRes.data);
-      setFiltered(pRes.data);
-      setCategories(['All Products', ...cRes.data.map(c => c.name)]);
-    }).finally(() => setLoading(false));
+    (async () => {
+      try {
+        const [productRes, categoryRes] = await Promise.all([
+          api.get('/products'),
+          api.get('/categories'),
+        ]);
+        setProducts(productRes.data);
+        setCategories(['All Products', ...categoryRes.data.map(c => c.name)]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  useEffect(() => {
+  /* derived list ---------------------------------------------------------- */
+  const filteredProducts = useMemo(() => {
     let list = [...products];
-    if (activeCat !== 'All Products') {
-      list = list.filter(p => p.category === activeCat);
-    }
-    if (search) {
-      list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-    }
-    if (sort === 'low') {
-      list.sort((a, b) => a.price - b.price);
-    } else if (sort === 'high') {
-      list.sort((a, b) => b.price - a.price);
-    } else if (sort === 'az') {
-      list.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === 'za') {
-      list.sort((a, b) => b.name.localeCompare(a.name));
-    }
-    setFiltered(list);
-  }, [activeCat, sort, search, products]);
 
+    /* category filter */
+    if (activeCategory !== 'All Products') {
+      list = list.filter(p => p.category === activeCategory);
+    }
+
+    /* search filter */
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(p => p.name.toLowerCase().includes(q));
+    }
+
+    /* sort */
+    switch (sort) {
+      case 'low':
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case 'high':
+        list.sort((a, b) => b.price - a.price);
+        break;
+      case 'az':
+        list.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'za':
+        list.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      default:
+        /* keep original order (assumed popularity) */
+        break;
+    }
+
+    return list;
+  }, [products, activeCategory, sort, searchQuery]);
+
+  /* handlers -------------------------------------------------------------- */
+  const resetFilters = useCallback(() => {
+    setActiveCategory('All Products');
+    setSort(null);
+    setSearchQuery('');
+  }, []);
+
+  /* render ---------------------------------------------------------------- */
   if (loading) return <Spinner />;
 
   return (
-    <Container>
+    <Page>
+      {/* ---------- sidebar ---------- */}
       <Sidebar>
-        <Section>
-          <Title>Categorie</Title>
+        <section>
+          <Heading>Categories</Heading>
           <List>
             {categories.map(cat => (
               <ListItem
                 key={cat}
-                $active={cat === activeCat}
+                $active={cat === activeCategory}
                 onClick={() => {
-                  setActiveCat(cat);
-                  setSort(null);
+                  setActiveCategory(cat);
+                  setSort(null); // reset sorting on category change
                 }}
               >
                 {cat}
               </ListItem>
             ))}
           </List>
-        </Section>
-        <Section>
-          <Title>Ordina per</Title>
-          <SortButton onClick={() => setSort(null)}>Popolarità</SortButton>
-          <SortButton onClick={() => setSort('low')}>Prezzo: Crescente</SortButton>
-          <SortButton onClick={() => setSort('high')}>Prezzo: Decrescente</SortButton>
-          <SortButton onClick={() => setSort('az')}>Nome: A-Z</SortButton>
-          <SortButton onClick={() => setSort('za')}>Nome: Z-A</SortButton>
-        </Section>
-        <Section>
-          <button onClick={() => {
-            setActiveCat('All Products');
-            setSort(null);
-            setSearch('');
-          }}>
-            Reset Filtri
-          </button>
-        </Section>
+        </section>
+
+        <section>
+          <Heading>Sort by</Heading>
+          <TextButton onClick={() => setSort(null)}>Popularity</TextButton>
+          <TextButton onClick={() => setSort('low')}>Price: Low → High</TextButton>
+          <TextButton onClick={() => setSort('high')}>Price: High → Low</TextButton>
+          <TextButton onClick={() => setSort('az')}>Name: A → Z</TextButton>
+          <TextButton onClick={() => setSort('za')}>Name: Z → A</TextButton>
+        </section>
+
+        <section>
+          <TextButton onClick={resetFilters} aria-label="Reset filters">
+            Reset Filters
+          </TextButton>
+        </section>
       </Sidebar>
-      <main style={{ flex: 1 }}>
-        <Title>Catalogo</Title>
+
+      {/* ---------- main ---------- */}
+      <Main>
+        <Heading>Catalog</Heading>
+
+        <label htmlFor="search" style={{ display: 'none' }}>
+          Search products
+        </label>
         <SearchInput
+          id="search"
           type="text"
-          placeholder="Cerca prodotti..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          placeholder="Search products…"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
         />
+
         <div style={{ marginBottom: '1rem' }}>
-          {filtered.length} prodotti trovati
+          {filteredProducts.length} product
+          {filteredProducts.length !== 1 && 's'} found
         </div>
+
         <Grid>
-          {filtered.map(product => (
+          {filteredProducts.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </Grid>
-      </main>
-    </Container>
+      </Main>
+    </Page>
   );
 }

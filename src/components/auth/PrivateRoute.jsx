@@ -1,22 +1,33 @@
-// src/components/auth/PrivateRoute.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import Spinner from '../ui/Spinner'; 
+import Spinner from '../ui/Spinner';
+
+/**
+ * Blocca le route protette finché:
+ * 1. redux-persist ha completato la re-hydration
+ * 2. l’utente risulta autenticato
+ */
 export default function PrivateRoute({ children }) {
-  const { isAuthenticated, status } = useSelector((s) => s.auth);
+  const { isAuthenticated, status, _persist } = useSelector((s) => s.auth);
   const location = useLocation();
+  const [rehydrated, setRehydrated] = useState(false);
 
-  // Durante il ripristino da redux-persist possiamo mostrare un loader
-  if (status === 'loading') return <Spinner />;
+  // redux-persist aggiunge _persist: { rehydrated: boolean }
+  useEffect(() => {
+    if (_persist?.rehydrated) setRehydrated(true);
+  }, [_persist]);
 
-  // Non autenticato → redirect a /login (salviamo la destinazione)
+  // Mostra loader finché non è tutto pronto
+  if (!rehydrated || status === 'loading') return <Spinner />;
+
+  // Se non loggato → redirect al login (salvando la destinazione)
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Autenticato → rendi i figli
+  // Utente autenticato → renderizza i figli
   return children;
 }
 

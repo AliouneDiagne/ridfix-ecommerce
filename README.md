@@ -53,7 +53,7 @@ Follow these steps to get the Ridfix project up and running on your local machin
     Create a `.env` file in the project root and add the API URL.
 
     ```env
-    VITE_API_URL=http://localhost:3002
+    VITE_API_URL=http://localhost:3001
     ```
 
 4.  **Prepare Images**:
