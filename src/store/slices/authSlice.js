@@ -1,122 +1,158 @@
+/* ---------------------------------------------
+ *  src/store/slices/authSlice.js
+ *  – gestione autenticazione + persistenza
+ * --------------------------------------------*/
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/api'; // Importa l'istanza Axios configurata
-import { toast } from 'react-toastify'; // Per le notifiche utente
+import api from '../../api/api';
+import { toast } from 'react-toastify';
 
-// Funzione di utilità per leggere lo stato di autenticazione dal localStorage
+/* ─────────────────────────────────────────────
+ *  Helpers: persistenza in localStorage
+ * ────────────────────────────────────────────*/
+const LS_KEY_STATE  = 'authState'; // stato completo (user, token…)
+const LS_KEY_TOKEN  = 'token';     // token separato, usato dall'interceptor
+
 const loadAuthState = () => {
   try {
-    const serializedState = localStorage.getItem('authState');
-    if (serializedState === null) {
-      return undefined; // Nessuno stato salvato
-    }
-    return JSON.parse(serializedState);
+    const stored = localStorage.getItem(LS_KEY_STATE);
+    return stored ? JSON.parse(stored) : undefined;
   } catch (err) {
-    console.error("Error loading auth state from localStorage:", err);
+    console.error('Error loading auth state from localStorage:', err);
     return undefined;
   }
 };
 
-// Funzione di utilità per salvare lo stato di autenticazione nel localStorage
 const saveAuthState = (state) => {
   try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('authState', serializedState);
+    localStorage.setItem(LS_KEY_STATE, JSON.stringify(state));
+    // salviamo anche solo il token per l’interceptor Axios
+    if (state.token) localStorage.setItem(LS_KEY_TOKEN, state.token);
+    else             localStorage.removeItem(LS_KEY_TOKEN);
   } catch (err) {
-    console.error("Error saving auth state to localStorage:", err);
+    console.error('Error saving auth state to localStorage:', err);
   }
 };
 
-// Stato iniziale, tenta di caricarlo dal localStorage
+/* ─────────────────────────────────────────────
+ *  Stato iniziale
+ * ────────────────────────────────────────────*/
 const initialState = loadAuthState() || {
-  user: null, // Oggetto utente (es. { id, email, role })
-  token: null, // Token di autenticazione simulato
-  isAuthenticated: false, // Flag per lo stato di autenticazione
-  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: null, // Messaggio di errore
+  user:            null,
+  token:           null,
+  isAuthenticated: false,
+  status:          'idle',   // idle | loading | succeeded | failed
+  error:           null,
 };
 
-// createAsyncThunk per la simulazione del login
-// Prende email e password e simula una chiamata API
+/* ─────────────────────────────────────────────
+ *  Thunk: LOGIN
+ * ────────────────────────────────────────────*/
 export const loginUser = createAsyncThunk(
-  'auth/loginUser', // Prefisso per i tipi di azione generati
+  'auth/loginUser',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      // Simulazione di una chiamata API GET per verificare le credenziali
-      // In un'app reale, useresti api.post('/login', { email, password })
-      const response = await api.get(`/users?email=${email}&password=${password}`);
-      const users = response.data;
+      // JSON-Server: query utenti con email+password
+      const { data } = await api.get(`/users`, {
+        params: { email, password },
+      });
 
-      if (users.length > 0) {
-        // Se un utente con quelle credenziali esiste
-        const user = users;
-        // In un'app reale, il backend restituirebbe un token JWT
-        const simulatedToken = `mock-token-${user.id}-${Math.random().toString(36).substring(7)}`;
-        toast.success(`Welcome, ${user.name || user.email}!`); // Notifica di successo
-        return { user: { ...user, role: user.role || 'user' }, token: simulatedToken }; // Restituisce i dati utente e il token
-      } else {
-        // Se nessun utente corrisponde alle credenziali
-        toast.error('Invalid credentials. Please try again.'); // Notifica di errore
+      if (data.length === 0) {
+        toast.error('Invalid credentials. Please try again.');
         return rejectWithValue('Invalid credentials');
       }
-    } catch (error) {
-      // Gestione degli errori di rete o API
-      let errorMessage = 'Failed to login. Please try again.';
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
-      toast.error(errorMessage); // Notifica di errore generico
-      return rejectWithValue(errorMessage);
+
+      const user = data[0]; // ← prendiamo il primo match
+      const simulatedToken = `mock-token-${user.id}-${Math.random().toString(36).slice(2)}`;
+
+      toast.success(`Welcome, ${user.name || user.email}!`);
+      return { user, token: simulatedToken };
+    } catch (err) {
+      const message =
+        err.response?.data?.message || 'Failed to login. Please try again.';
+      toast.error(message);
+      return rejectWithValue(message);
     }
   }
 );
 
-// createSlice definisce lo stato, i reducer e le azioni
+/* ─────────────────────────────────────────────
+ *  Thunk: REGISTER  (endpoint corretto: /users)
+ * ────────────────────────────────────────────*/
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (newUser, { rejectWithValue }) => {
+    try {
+      const { data: createdUser } = await api.post('/users', newUser);
+      toast.success('Registration successful. You can now log in.');
+      return createdUser;
+    } catch (err) {
+      const message =
+        err.response?.data?.message || 'Failed to register. Please try again.';
+      toast.error(message);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+/* ─────────────────────────────────────────────
+ *  Slice
+ * ────────────────────────────────────────────*/
 const authSlice = createSlice({
-  name: 'auth', // Nome dello slice
-  initialState, // Stato iniziale
+  name: 'auth',
+  initialState,
   reducers: {
-    // Azione per il logout
-    logout: (state) => {
-      state.user = null; // Resetta i dati utente
-      state.token = null; // Rimuove il token
-      state.isAuthenticated = false; // Imposta lo stato a non autenticato
-      saveAuthState(state); // Salva lo stato aggiornato nel localStorage
-      toast.info('You have been logged out.'); // Notifica di logout
+    logout(state) {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+      saveAuthState(state);
+      toast.info('You have been logged out.');
     },
-    // Azione per impostare il ruolo (utile per test o gestione admin)
-    setUserRole: (state, action) => {
+    setUserRole(state, action) {
       if (state.user) {
         state.user.role = action.payload;
-        saveAuthState(state); // Salva lo stato con il nuovo ruolo
+        saveAuthState(state);
       }
     },
   },
-  // extraReducers gestisce le azioni generate da createAsyncThunk (pending, fulfilled, rejected)
   extraReducers: (builder) => {
+    /* ----- LOGIN ----- */
     builder
       .addCase(loginUser.pending, (state) => {
-        state.status = 'loading'; // Stato di caricamento durante la login
-        state.error = null; // Resetta gli errori precedenti
+        state.status = 'loading';
+        state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = 'succeeded'; // Login riuscito
-        state.user = action.payload.user; // Imposta i dati utente
-        state.token = action.payload.token; // Imposta il token
-        state.isAuthenticated = true; // Imposta lo stato a autenticato
-        saveAuthState(state); // Salva lo stato nel localStorage dopo il successo
+      .addCase(loginUser.fulfilled, (state, { payload }) => {
+        state.status = 'succeeded';
+        state.user = payload.user;
+        state.token = payload.token;
+        state.isAuthenticated = true;
+        saveAuthState(state);
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = 'failed'; // Login fallito
-        state.error = action.payload; // Imposta il messaggio di errore
+      .addCase(loginUser.rejected, (state, { payload }) => {
+        state.status = 'failed';
+        state.error = payload;
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;
-        saveAuthState(state); // Salva lo stato (non autenticato) nel localStorage
+        saveAuthState(state);
+      });
+
+    /* ----- REGISTER ----- */
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state) => {
+        state.status = 'succeeded';
+      })
+      .addCase(registerUser.rejected, (state, { payload }) => {
+        state.status = 'failed';
+        state.error = payload;
       });
   },
 });
 
-// Esporta l'azione di logout
 export const { logout, setUserRole } = authSlice.actions;
-// Esporta il reducer
 export default authSlice.reducer;

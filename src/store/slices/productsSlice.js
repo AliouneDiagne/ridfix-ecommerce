@@ -1,179 +1,220 @@
+/* ------------------------------------------------------------
+ *  src/store/slices/productsSlice.js
+ *  – gestione prodotti, brand e prodotto selezionato
+ * -----------------------------------------------------------*/
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
 import { toast } from 'react-toastify';
 
-/**
- * Helper to build URLSearchParams for product fetching based on filters.
- * @param {Object} filters
- * @returns {URLSearchParams}
- */
+/* ─────────────────────────────────────────────
+ *  1. Helper – costruisci query string da filtri
+ * ────────────────────────────────────────────*/
 function buildProductsQueryParams(filters = {}) {
   const params = new URLSearchParams();
-  if (filters.category) params.append('category', filters.category);
-  if (filters.brand) params.append('brand', filters.brand);
-  if (filters.minPrice) params.append('price_gte', filters.minPrice);
-  if (filters.maxPrice) params.append('price_lte', filters.maxPrice);
-  if (filters.search) params.append('q', filters.search);
+
+  if (filters.category)  params.append('category', filters.category);
+  if (filters.brand)     params.append('brand', filters.brand);
+  if (filters.minPrice)  params.append('price_gte', filters.minPrice);
+  if (filters.maxPrice)  params.append('price_lte', filters.maxPrice);
+  if (filters.search)    params.append('q', filters.search);
   if (filters.inStockOnly !== undefined)
     params.append('inStock', filters.inStockOnly ? 'true' : 'false');
+
   if (filters.sortBy) {
-    let order = 'asc';
-    let sortField = filters.sortBy;
-    if (sortField.includes('_desc')) {
+    let order      = 'asc';
+    let sortField  = filters.sortBy;
+
+    if (sortField.endsWith('_desc')) {
       sortField = sortField.replace('_desc', '');
       order = 'desc';
-    } else if (sortField.includes('_asc')) {
+    } else if (sortField.endsWith('_asc')) {
       sortField = sortField.replace('_asc', '');
       order = 'asc';
     }
-    params.append('_sort', sortField);
+    params.append('_sort',  sortField);
     params.append('_order', order);
   }
+
   return params;
 }
 
-// Async thunk for fetching all products with filters and sorting
+/* ─────────────────────────────────────────────
+ *  2. Helper – normalizza formato prodotto
+ *     • Converte `featured` → `isDiscounted`
+ *     • Garantisce `discountPrice`
+ * ────────────────────────────────────────────*/
+function normalizeProduct(raw) {
+  const p = { ...raw };
+
+  // Se il vecchio schema usa "featured", traducilo
+  if (p.featured === true && p.isDiscounted === undefined) {
+    p.isDiscounted  = true;
+    // Fallback discountPrice se manca
+    if (p.discountPrice === undefined) {
+      p.discountPrice = +(p.price * 0.9).toFixed(2); // 10 % sconto di default
+    }
+  }
+
+  // 🔧 Puoi aggiungere qui altre normalizzazioni future
+  return p;
+}
+
+/* ─────────────────────────────────────────────
+ *  3. Async thunk: fetch lista prodotti
+ * ────────────────────────────────────────────*/
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (filters, { rejectWithValue }) => {
     try {
-      const params = buildProductsQueryParams(filters);
-      const response = await api.get(`/products?${params.toString()}`);
-      // Success toast removed to avoid flooding on every filter/search
-      return response.data;
-    } catch (error) {
-      let errorMessage = 'Failed to fetch products.';
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
-      toast.error(errorMessage);
-      return rejectWithValue(errorMessage);
+      const params    = buildProductsQueryParams(filters);
+      const { data }  = await api.get(`/products?${params.toString()}`);
+
+      return data.map(normalizeProduct); // ← normalizza qui
+    } catch (err) {
+      const msg =
+        err.response?.data?.message || 'Failed to fetch products.';
+      toast.error(msg);
+      return rejectWithValue(msg);
     }
   }
 );
 
-// Async thunk for fetching a single product by ID
+/* ─────────────────────────────────────────────
+ *  4. Async thunk: fetch singolo prodotto
+ * ────────────────────────────────────────────*/
 export const fetchProductById = createAsyncThunk(
   'products/fetchProductById',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/products/${id}`);
-      return response.data;
-    } catch (error) {
-      let errorMessage = `Failed to fetch product with ID ${id}.`;
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
-      toast.error(errorMessage);
-      return rejectWithValue(errorMessage);
+      const { data } = await api.get(`/products/${id}`);
+      return normalizeProduct(data);
+    } catch (err) {
+      const msg =
+        err.response?.data?.message ||
+        `Failed to fetch product with ID ${id}.`;
+      toast.error(msg);
+      return rejectWithValue(msg);
     }
   }
 );
 
-// Async thunk for fetching brands (for filters)
+/* ─────────────────────────────────────────────
+ *  5. Async thunk: brand list (per i filtri)
+ * ────────────────────────────────────────────*/
 export const fetchBrands = createAsyncThunk(
   'products/fetchBrands',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/brands');
-      return response.data;
-    } catch (error) {
-      let errorMessage = 'Failed to fetch brands.';
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
-      toast.error(errorMessage);
-      return rejectWithValue(errorMessage);
+      const { data } = await api.get('/brands');
+      return data;
+    } catch (err) {
+      const msg =
+        err.response?.data?.message || 'Failed to fetch brands.';
+      toast.error(msg);
+      return rejectWithValue(msg);
     }
   }
 );
 
-// Initial state for the products slice
+/* ─────────────────────────────────────────────
+ *  6. Stato iniziale
+ * ────────────────────────────────────────────*/
 const initialState = {
-  items: [],
-  brands: [],
+  items:           [],
+  brands:          [],
   selectedProduct: null,
-  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: null,
-  brandsStatus: 'idle', // Separate loading state for brands
-  brandsError: null,
+  status:          'idle',   // prodotti
+  error:           null,
+  brandsStatus:    'idle',   // brand
+  brandsError:     null,
 };
 
+/* ─────────────────────────────────────────────
+ *  7. Slice
+ * ────────────────────────────────────────────*/
 const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    setSelectedProduct: (state, action) => {
-      state.selectedProduct = action.payload;
+    setSelectedProduct(state, { payload }) {
+      state.selectedProduct = payload;
     },
-    clearSelectedProduct: (state) => {
+    clearSelectedProduct(state) {
       state.selectedProduct = null;
     },
-    // Simulated CRUD actions (for local state only)
-    addProduct: (state, action) => {
-      state.items.push(action.payload);
+
+    /* CRUD locale (demo) */
+    addProduct(state, { payload }) {
+      state.items.push(normalizeProduct(payload));
       toast.success('Product added successfully!');
     },
-    updateProduct: (state, action) => {
-      const index = state.items.findIndex(p => p.id === action.payload.id);
-      if (index !== -1) {
-        state.items[index] = action.payload;
+    updateProduct(state, { payload }) {
+      const idx = state.items.findIndex((p) => p.id === payload.id);
+      if (idx !== -1) {
+        state.items[idx] = normalizeProduct(payload);
         toast.success('Product updated successfully!');
       }
     },
-    deleteProduct: (state, action) => {
-      state.items = state.items.filter(p => p.id !== action.payload);
+    deleteProduct(state, { payload: id }) {
+      state.items = state.items.filter((p) => p.id !== id);
       toast.success('Product deleted successfully!');
     },
   },
+
   extraReducers: (builder) => {
+    /* fetchProducts */
     builder
-      // fetchProducts
       .addCase(fetchProducts.pending, (state) => {
         state.status = 'loading';
-        state.error = null;
+        state.error  = null;
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(fetchProducts.fulfilled, (state, { payload }) => {
         state.status = 'succeeded';
-        state.items = action.payload;
+        state.items  = payload;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchProducts.rejected, (state, { payload }) => {
         state.status = 'failed';
-        state.error = action.payload;
-        state.items = [];
-      })
-      // fetchProductById
+        state.error  = payload;
+        state.items  = [];
+      });
+
+    /* fetchProductById */
+    builder
       .addCase(fetchProductById.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
+        state.status          = 'loading';
+        state.error           = null;
         state.selectedProduct = null;
       })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.selectedProduct = action.payload;
+      .addCase(fetchProductById.fulfilled, (state, { payload }) => {
+        state.status          = 'succeeded';
+        state.selectedProduct = payload;
       })
-      .addCase(fetchProductById.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+      .addCase(fetchProductById.rejected, (state, { payload }) => {
+        state.status          = 'failed';
+        state.error           = payload;
         state.selectedProduct = null;
-      })
-      // fetchBrands
+      });
+
+    /* fetchBrands */
+    builder
       .addCase(fetchBrands.pending, (state) => {
         state.brandsStatus = 'loading';
-        state.brandsError = null;
+        state.brandsError  = null;
       })
-      .addCase(fetchBrands.fulfilled, (state, action) => {
+      .addCase(fetchBrands.fulfilled, (state, { payload }) => {
         state.brandsStatus = 'succeeded';
-        state.brands = action.payload;
+        state.brands       = payload;
       })
-      .addCase(fetchBrands.rejected, (state, action) => {
+      .addCase(fetchBrands.rejected, (state, { payload }) => {
         state.brandsStatus = 'failed';
-        state.brandsError = action.payload;
-        // Error toast already shown in thunk
+        state.brandsError  = payload;
       });
   },
 });
 
+/* ─────────────────────────────────────────────
+ *  8. Export
+ * ────────────────────────────────────────────*/
 export const {
   setSelectedProduct,
   clearSelectedProduct,
@@ -184,5 +225,5 @@ export const {
 
 export default productsSlice.reducer;
 
-// Optionally export the helper for testing or reuse
+/* Facoltativo: esporta helper per test */
 export { buildProductsQueryParams };

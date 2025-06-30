@@ -6,23 +6,21 @@ import styled from 'styled-components';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { toast } from 'react-toastify';
-import api from '../../api/api';
 
-/**
- * Schema di validazione per il form di spedizione con Yup. [2, 58]
- */
+/* ─────────────────────────────────────────────
+ *  Schema di validazione
+ * ────────────────────────────────────────────*/
 const shippingSchema = yup.object().shape({
-  fullName: yup.string().required('Full name is required'),
-  address: yup.string().required('Address is required'),
-  city: yup.string().required('City is required'),
+  fullName:   yup.string().required('Full name is required'),
+  address:    yup.string().required('Address is required'),
+  city:       yup.string().required('City is required'),
   postalCode: yup.string().required('Postal code is required'),
-  phone: yup.string().required('Phone number is required'),
+  phone:      yup.string().required('Phone number is required'),
 });
 
-/**
- * Componente ShippingForm.
- * Gestisce l'inserimento dei dati di spedizione per il checkout.
- */
+/* ─────────────────────────────────────────────
+ *  Styled components
+ * ────────────────────────────────────────────*/
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
@@ -41,19 +39,26 @@ const ButtonGroup = styled.div`
   margin-top: ${({ theme }) => theme.spacing(3)};
 `;
 
-const ShippingForm = ({ onNext }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(shippingSchema),
-  });
+/* ─────────────────────────────────────────────
+ *  Component
+ * ────────────────────────────────────────────*/
+export default function ShippingForm({ onNext }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(shippingSchema) });
 
   const onSubmit = async (data) => {
     try {
-      // Simula l'invio dei dati di spedizione. In un caso reale, potresti salvarli in Redux o in sessione. [58]
+      // In un caso reale, qui potresti inviare o salvare i dati
       console.log('Shipping Data:', data);
       toast.success('Shipping information saved!');
-      onNext(); // Passa al prossimo step [76]
+      onNext(); // Avanza allo step successivo
     } catch (error) {
-      toast.error('Error saving shipping information.');
+      toast.error(
+        error?.message || 'Error saving shipping information.',
+      );
     }
   };
 
@@ -90,11 +95,10 @@ const ShippingForm = ({ onNext }) => {
         {...register('phone')}
         error={errors.phone?.message}
       />
+
       <ButtonGroup>
         <Button type="submit">Next Step</Button>
       </ButtonGroup>
     </FormContainer>
   );
-};
-
-export default ShippingForm;
+}

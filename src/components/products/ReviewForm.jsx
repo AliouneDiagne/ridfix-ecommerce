@@ -8,7 +8,7 @@ import Input from '../ui/Input';
 import { toast } from 'react-toastify';
 import api from '../../api/api';
 
-// Schema di validazione
+/* ───────── Schema di validazione ───────── */
 const reviewSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   rating: yup
@@ -20,7 +20,7 @@ const reviewSchema = yup.object().shape({
   comment: yup.string().required('Comment is required'),
 });
 
-// Styled form container
+/* ───────── Styled components ───────── */
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -31,7 +31,6 @@ const Form = styled.form`
   border-radius: ${({ theme }) => theme.borderRadius || '4px'};
 `;
 
-// Testarea per il commento
 const TextArea = styled.textarea`
   width: 100%;
   padding: 0.75rem;
@@ -49,13 +48,13 @@ const TextArea = styled.textarea`
   }
 `;
 
-// Messaggio di errore per textarea
 const ErrorMessage = styled.p`
   color: ${({ theme }) => theme.colors.danger || '#ff4d4f'};
   font-size: 0.875rem;
   margin-top: 0.5rem;
 `;
 
+/* ───────── Component ───────── */
 export default function ReviewForm({ productId, onReviewSubmit }) {
   const theme = useTheme();
   const {
@@ -63,27 +62,28 @@ export default function ReviewForm({ productId, onReviewSubmit }) {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
-    resolver: yupResolver(reviewSchema),
-  });
+  } = useForm({ resolver: yupResolver(reviewSchema) });
+
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      // JSON-Server non ha endpoint /products/:id/reviews di default,
-      // quindi inviamo a /reviews con productId incluso
-      const response = await api.post('/reviews', {
+      const { data: newReview } = await api.post('/reviews', {
         productId,
         ...data,
         date: new Date().toISOString(),
       });
 
       toast.success('Review submitted successfully!');
-      if (onReviewSubmit) onReviewSubmit(response.data);
+      if (onReviewSubmit) onReviewSubmit(newReview);
       reset();
     } catch (error) {
-      toast.error('Failed to submit review.');
+      const message =
+        error?.response?.data?.message ||
+        error.message ||
+        'Failed to submit review.';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -91,12 +91,13 @@ export default function ReviewForm({ productId, onReviewSubmit }) {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <h5 style={{ color: theme.colors.text, marginBottom: '0.5rem' }}>Leave a Review</h5>
+      <h5 style={{ color: theme.colors.text, marginBottom: '0.5rem' }}>
+        Leave a Review
+      </h5>
 
       <Input
         label="Your Name"
         type="text"
-        name="name"
         {...register('name')}
         error={errors.name?.message}
       />
@@ -104,7 +105,6 @@ export default function ReviewForm({ productId, onReviewSubmit }) {
       <Input
         label="Rating (1–5)"
         type="number"
-        name="rating"
         min="1"
         max="5"
         {...register('rating')}

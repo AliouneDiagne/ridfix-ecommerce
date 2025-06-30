@@ -1,32 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../../store/slices/authSlice'; // Assumi un'azione registerUser nello slice auth [77]
+import { registerUser } from '../../store/slices/authSlice';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-/**
- * Schema di validazione per il form di registrazione con Yup. [58]
- */
+/* ─────────────────────────────────────────────
+ *  Schema di validazione
+ * ────────────────────────────────────────────*/
 const registerSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
   email: yup.string().email('Invalid email format').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-  confirmPassword: yup.string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match') // Deve corrispondere alla password
+  password: yup
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Passwords must match')
     .required('Confirm password is required'),
 });
 
-/**
- * Componente RegisterForm.
- * Form per la registrazione di nuovi utenti.
- */
+/* ─────────────────────────────────────────────
+ *  Stili container
+ * ────────────────────────────────────────────*/
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
@@ -39,31 +42,38 @@ const FormContainer = styled.form`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
-const RegisterForm = () => {
+/* ─────────────────────────────────────────────
+ *  Component
+ * ────────────────────────────────────────────*/
+export default function RegisterForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const authStatus = useSelector(state => state.auth.status); // Stato del processo di registrazione
-  const authError = useSelector(state => state.auth.error); // Errore dal processo di registrazione
+  const { status: authStatus, error: authError } = useSelector((s) => s.auth);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(registerSchema),
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(registerSchema) });
 
   const onSubmit = async (data) => {
     try {
-      // Simula la registrazione. In un'app reale, si invierebbe a un'API backend. [58]
-      // L'azione registerUser dovrebbe essere definita nel tuo authSlice.
-      const resultAction = await dispatch(registerUser(data)).unwrap(); 
-      toast.success(`Registration successful! Welcome, ${resultAction.user.firstName}!`); // Notifica di successo
-      navigate('/login'); // Reindirizza al login dopo la registrazione
+      const result = await dispatch(registerUser(data)).unwrap();
+      toast.success(
+        `Registration successful! Welcome, ${result.user.firstName}!`,
+      );
+      navigate('/login');
     } catch (error) {
-      toast.error(authError || 'Registration failed. Please try again.'); // Notifica di errore
+      const message =
+        authError || error?.message || 'Registration failed. Please try again.';
+      toast.error(message);
     }
   };
 
   return (
     <FormContainer onSubmit={handleSubmit(onSubmit)} noValidate>
-      <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', color: 'inherit' }}>Register</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Register</h2>
+
       <Input
         label="First Name"
         name="firstName"
@@ -97,12 +107,14 @@ const RegisterForm = () => {
         {...register('confirmPassword')}
         error={errors.confirmPassword?.message}
       />
+
       <Button type="submit" disabled={authStatus === 'loading'}>
         {authStatus === 'loading' ? 'Registering...' : 'Register'}
       </Button>
-      {authError && <p style={{ color: 'red', textAlign: 'center' }}>{authError}</p>}
+
+      {authError && (
+        <p style={{ color: 'red', textAlign: 'center' }}>{authError}</p>
+      )}
     </FormContainer>
   );
-};
-
-export default RegisterForm;
+}

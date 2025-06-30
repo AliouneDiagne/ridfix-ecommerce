@@ -88,6 +88,11 @@ export default function LoginPage() {
       <p style={{ marginTop: '1rem', textAlign: 'center' }}>
         New here? <Link to="/register">Register</Link>
       </p>
+      <p style={{ fontSize: '0.85rem', color: '#888', textAlign: 'center', marginTop: '1rem' }}>
+  Demo credentials – Admin: <strong>admin@ridfix.io / admin123</strong>,&nbsp;
+  User: <strong>user@ridfix.io / user123</strong>
+</p>
+
     </Container>
   )
 }

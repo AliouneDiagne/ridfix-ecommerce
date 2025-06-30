@@ -10,17 +10,23 @@ import Input from '../ui/Input';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-/**
- * Schema di validazione per il form di login
- */
+/* ─────────────────────────────────────────────
+ *  Schema di validazione
+ * ────────────────────────────────────────────*/
 const loginSchema = yup.object().shape({
-  email: yup.string().email('Formato email non valido').required('Email obbligatoria'),
-  password: yup.string().min(6, 'La password deve contenere almeno 6 caratteri').required('Password obbligatoria'),
+  email: yup
+    .string()
+    .email('Formato email non valido')
+    .required('Email obbligatoria'),
+  password: yup
+    .string()
+    .min(6, 'La password deve contenere almeno 6 caratteri')
+    .required('Password obbligatoria'),
 });
 
-/**
- * Stili del contenitore del form
- */
+/* ─────────────────────────────────────────────
+ *  Stili container
+ * ────────────────────────────────────────────*/
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
@@ -33,10 +39,15 @@ const FormContainer = styled.form`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
-const LoginForm = () => {
+/* ─────────────────────────────────────────────
+ *  Component
+ * ────────────────────────────────────────────*/
+export default function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status: authStatus, error: authError } = useSelector(state => state.auth);
+  const { status: authStatus, error: authError } = useSelector(
+    (state) => state.auth,
+  );
 
   const {
     register,
@@ -51,8 +62,11 @@ const LoginForm = () => {
       const result = await dispatch(loginUser(data)).unwrap();
       toast.success(`Benvenuto, ${result.user.email}!`);
       navigate('/');
-    } catch (err) {
-      toast.error(authError || 'Login fallito. Verifica le credenziali.');
+    } catch (error) {
+      // usiamo "error" per rispettare ESLint (no-unused-vars)
+      const message =
+        authError || error?.message || 'Login fallito. Verifica le credenziali.';
+      toast.error(message);
     }
   };
 
@@ -85,6 +99,4 @@ const LoginForm = () => {
       )}
     </FormContainer>
   );
-};
-
-export default LoginForm;
+}
