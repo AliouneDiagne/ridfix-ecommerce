@@ -1,93 +1,119 @@
-// src/store/slices/wishlistSlice.js
-import { createSlice, createSelector } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
+// src/pages/WishlistPage.jsx
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { fetchProducts } from '../store/slices/productsSlice';
+import { removeFromWishlist } from '../store/slices/wishlistSlice';
+import { addToCart } from '../store/slices/cartSlice';
+import { selectWishlistProducts } from '../store/slices/wishlistSlice';
+import ProductCard from '../components/products/ProductCard';
+import Spinner from '../components/ui/Spinner';
 
-// Helpers: load / save da localStorage
-const loadIds = () => {
-  try {
-    const raw = localStorage.getItem('wishlistIds');
-    // Sempre array di stringhe
-    return raw ? JSON.parse(raw).map(String) : [];
-  } catch {
-    return [];
+const Container = styled.div`
+  padding: 2rem;
+`;
+const Title = styled.h1`
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.colors.text};
+`;
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.3rem;
+`;
+const ActionBar = styled.div`
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+`;
+const Btn = styled.button`
+  background: ${({ theme, $grey }) => ($grey ? '#777' : theme.colors.primary)};
+  color: #fff;
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  &:hover {
+    opacity: 0.9;
   }
-};
+`;
+const Empty = styled.div`
+  text-align: center;
+  padding: 4rem 0;
+  color: ${({ theme }) => theme.colors.textLight};
+`;
 
-const saveIds = (ids) => {
-  try {
-    localStorage.setItem('wishlistIds', JSON.stringify(ids.map(String)));
-  } catch {
-    // No-op: lint safe
+export default function WishlistPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Memoized: products in wishlist (from Redux)
+  const wishlistProducts = useSelector(selectWishlistProducts);
+  const { status, error } = useSelector((s) => s.products);
+
+  // 🚨 Forza sempre il fetch tranne quando è già in corso o completato!
+  useEffect(() => {
+    if (status !== 'succeeded' && status !== 'loading') {
+      dispatch(fetchProducts());
+    }
+  }, [status, dispatch]);
+
+  // DEBUG: log status e prodotti in wishlist
+  console.log("Status:", status);
+  console.log("Wishlist products:", wishlistProducts);
+
+  if (status === 'loading' || status === 'idle') {
+    return (
+      <Container>
+        <Title>Your Wishlist</Title>
+        <Spinner />
+      </Container>
+    );
   }
-};
+  if (status === 'failed') {
+    return (
+      <Container>
+        <Title>Your Wishlist</Title>
+        <Empty>
+          <p>Could not load products: {error}</p>
+          <Btn onClick={() => dispatch(fetchProducts())}>Retry</Btn>
+        </Empty>
+      </Container>
+    );
+  }
+  if (!wishlistProducts.length) {
+    return (
+      <Container>
+        <Title>Your Wishlist</Title>
+        <Empty>
+          <p>Wishlist is empty.</p>
+          <Btn onClick={() => navigate('/catalog')}>Browse products</Btn>
+        </Empty>
+      </Container>
+    );
+  }
 
-// Initial state
-const initialState = {
-  ids: loadIds(), // array di stringhe
-};
-
-// Slice
-const wishlistSlice = createSlice({
-  name: 'wishlist',
-  initialState,
-  reducers: {
-    // Toggle: aggiungi o rimuovi prodotto dalla wishlist
-    toggleWishlist(state, action) {
-      const payload = action.payload;
-      const id = typeof payload === 'object' ? String(payload.id) : String(payload);
-
-      if (state.ids.includes(id)) {
-        state.ids = state.ids.filter((x) => x !== id);
-        toast.info('Removed from wishlist.');
-      } else {
-        state.ids.push(id);
-        toast.success('Added to wishlist.');
-      }
-      saveIds(state.ids);
-    },
-
-    // Remove esplicito
-    removeFromWishlist(state, action) {
-      const id = String(action.payload);
-      if (state.ids.includes(id)) {
-        state.ids = state.ids.filter((x) => x !== id);
-        toast.info('Item removed from wishlist.');
-        saveIds(state.ids);
-      }
-    },
-
-    // Clear all
-    clearWishlist(state) {
-      state.ids = [];
-      saveIds(state.ids);
-      toast.success('Wishlist cleared.');
-    },
-  },
-});
-
-// Selector base: array di ID (stringhe)
-export const selectWishlistIds = (state) => state.wishlist.ids;
-
-// Selector memoizzato: prodotti wishlist dal catalogo
-export const selectWishlistProducts = createSelector(
-  [
-    state => state.products.items, // tutti i prodotti
-    state => state.wishlist.ids    // tutti gli ID wishlist
-  ],
-  (allProducts, wishlistIds) =>
-    allProducts.filter(product => wishlistIds.includes(String(product.id)))
-);
-
-// Selector badge: quanti prodotti in wishlist
-export const selectWishlistCount = createSelector(
-  selectWishlistIds,
-  (ids) => ids.length
-);
-
-export const {
-  toggleWishlist,
-  removeFromWishlist,
-  clearWishlist,
-} = wishlistSlice.actions;
-
-export default wishlistSlice.reducer;
+  return (
+    <Container>
+      <Title>Your Wishlist</Title>
+      <Grid>
+        {wishlistProducts.map((p) => (
+          <div key={p.id}>
+            <ProductCard product={p} />
+            <ActionBar>
+              <Btn onClick={() => dispatch(addToCart({ product: p, qty: 1 }))}>
+                Add to cart
+              </Btn>
+              <Btn $grey onClick={() => dispatch(removeFromWishlist(p.id))}>
+                Remove
+              </Btn>
+            </ActionBar>
+          </div>
+        ))}
+      </Grid>
+    </Container>
+  );
+}

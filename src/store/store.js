@@ -1,10 +1,10 @@
 // src/store/store.js
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { persistStore, persistReducer, 
+import { persistStore, persistReducer,
          FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-/* --- Importa i tuoi slice --- */
+// Importa i tuoi slice Redux
 import authReducer      from './slices/authSlice';
 import productsReducer  from './slices/productsSlice';
 import cartReducer      from './slices/cartSlice';
@@ -12,7 +12,7 @@ import wishlistReducer  from './slices/wishlistSlice';
 import ordersReducer    from './slices/ordersSlice';
 import usersReducer     from './slices/usersSlice';
 
-/* --- Root reducer --- */
+// Definisci il root reducer combinando tutti gli slice
 const rootReducer = combineReducers({
   auth:      authReducer,
   products:  productsReducer,
@@ -22,22 +22,23 @@ const rootReducer = combineReducers({
   users:     usersReducer,
 });
 
-/* --- Persist config (solo AUTH) --- */
+// Configurazione redux-persist: solo 'auth' viene persistito
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'], // Solo auth viene persistito da redux-persist!
+  whitelist: ['auth'],
 };
 
+// Applica il reducer persistito
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-/* --- Store configuration --- */
+// Crea lo store con i middleware corretti (serializableCheck fix per redux-persist)
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignora i tipi di action di redux-persist che contengono funzioni
+        // Ignora i tipi di azione di redux-persist che non sono serializzabili
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),

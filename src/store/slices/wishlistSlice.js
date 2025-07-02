@@ -1,7 +1,8 @@
+// src/store/slices/wishlistSlice.js
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
-// Helpers: load / save da localStorage
+// Helpers: gestione localeStorage per persistenza wishlist
 const loadIds = () => {
   try {
     const raw = localStorage.getItem('wishlistIds');
@@ -15,12 +16,12 @@ const saveIds = (ids) => {
   try {
     localStorage.setItem('wishlistIds', JSON.stringify(ids.map(String)));
   } catch {
-    // Ignored: fallback silent error, non blocca l'app
+    // fallback: errore silenzioso, non blocca l'app
   }
 };
 
 const initialState = {
-  ids: loadIds(), // array di stringhe
+  ids: loadIds(), // Array di stringhe (id prodotti)
 };
 
 const wishlistSlice = createSlice({
@@ -55,20 +56,20 @@ const wishlistSlice = createSlice({
   },
 });
 
-// Selector base: array di ID (stringhe)
+// **Selector: array ID wishlist**
 export const selectWishlistIds = (state) => state.wishlist.ids;
 
-// Selector memoizzato: prodotti wishlist dal catalogo
+// **Selector memoizzato: prodotti wishlist dal catalogo**
 export const selectWishlistProducts = createSelector(
   [
-    state => state.products.items,
-    state => state.wishlist.ids
+    (state) => state.products.items,
+    (state) => state.wishlist.ids,
   ],
   (allProducts, wishlistIds) =>
-    allProducts.filter(product => wishlistIds.includes(String(product.id)))
+    allProducts.filter((product) => wishlistIds.includes(String(product.id)))
 );
 
-// Selector badge: quanti prodotti in wishlist
+// **Selector: badge count**
 export const selectWishlistCount = createSelector(
   selectWishlistIds,
   (ids) => ids.length

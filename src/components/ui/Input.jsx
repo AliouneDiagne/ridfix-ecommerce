@@ -63,23 +63,21 @@ const Input = forwardRef(
       icon,
       type = 'text',
       name,
-      id, // supporta id personalizzato
+      id, // opzionale: puoi passare un id personalizzato
       error,
       as = 'input',
-      autoComplete, // nuovo: supporta l’attributo autocomplete!
+      autoComplete, // supporta autocomplete
       ...props
     },
     ref
   ) => {
-    const inputId = id || name; // usa id se presente, altrimenti name
+    const inputId = id || name; // Priorità a id, fallback su name
 
     return (
       <InputWrapper>
         {label && <Label htmlFor={inputId}>{label}</Label>}
-
         <ControlWrapper>
           {icon && <IconSlot>{icon}</IconSlot>}
-
           <StyledInput
             as={as}
             type={type}
@@ -89,12 +87,15 @@ const Input = forwardRef(
             $hasError={Boolean(error)}
             $hasIcon={Boolean(icon)}
             autoComplete={autoComplete}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${inputId}-error` : undefined}
             {...props}
           />
         </ControlWrapper>
-
         {error && (
-          <ErrorMessage role="alert">{error}</ErrorMessage>
+          <ErrorMessage id={`${inputId}-error`} role="alert">
+            {error}
+          </ErrorMessage>
         )}
       </InputWrapper>
     );
