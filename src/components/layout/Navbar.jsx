@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
 import { logout } from '../../store/slices/authSlice';
 import ThemeToggle from './ThemeToggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +10,11 @@ import {
   faSignInAlt,
   faSignOutAlt,
   faCog,
+  faHeart,
 } from '@fortawesome/free-solid-svg-icons';
+import { selectCartItemsCount } from '../../store/selectors/cartSelectors';
+import { selectWishlistCount } from '../../store/slices/wishlistSlice';
+import styled from 'styled-components';
 
 const NavContainer = styled.nav`
   background: ${({ theme }) => theme.colors.surface};
@@ -66,12 +69,42 @@ const NavItem = styled(NavLink)`
   }
 `;
 
+const WishlistLink = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing(1)};
+  color: ${({ theme }) => theme.colors.text};
+  text-decoration: none;
+  position: relative;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const WishlistBadge = styled.span`
+  background-color: #FF4C00;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -14px;
+  font-weight: 700;
+`;
+
 const CartLink = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing(1)};
   color: ${({ theme }) => theme.colors.text};
   text-decoration: none;
+  position: relative;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
@@ -86,6 +119,9 @@ const CartBadge = styled.span`
   font-size: 0.75rem;
   min-width: 24px;
   text-align: center;
+  position: absolute;
+  top: -10px;
+  right: -14px;
 `;
 
 const AuthControls = styled.div`
@@ -107,9 +143,8 @@ const LogoutButton = styled.button`
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const cartItemsCount = useSelector(state =>
-    Object.values(state.cart.items || {}).reduce((sum, item) => sum + item.quantity, 0)
-  );
+  const cartItemsCount = useSelector(selectCartItemsCount);
+  const wishlistCount = useSelector(selectWishlistCount);
   const user = useSelector(state => state.auth.user);
 
   const handleLogout = () => {
@@ -124,7 +159,17 @@ const Navbar = () => {
         <li><NavItem to="/catalog">Catalog</NavItem></li>
         <li><NavItem to="/about">About Us</NavItem></li>
         <li><NavItem to="/contact">Contact</NavItem></li>
-        <li><NavItem to="/wishlist">Wishlist</NavItem></li>
+        <li>
+          <WishlistLink to="/wishlist">
+            <FontAwesomeIcon icon={faHeart} />
+            Wishlist
+            {wishlistCount > 0 && (
+              <WishlistBadge aria-label={`${wishlistCount} in wishlist`}>
+                {wishlistCount}
+              </WishlistBadge>
+            )}
+          </WishlistLink>
+        </li>
       </NavLinks>
       <AuthControls>
         <ThemeToggle />

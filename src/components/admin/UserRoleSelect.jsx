@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const StyledSelect = styled.select`
@@ -12,25 +13,34 @@ const StyledSelect = styled.select`
 
 const ROLE_OPTIONS = ['user', 'admin'];
 
-/**
- * Dropdown per la selezione del ruolo utente.
- *
- * @param {string} userId - ID dell'utente.
- * @param {string} currentRole - Ruolo attuale dell'utente.
- * @param {Function} onRoleChange - Callback da eseguire al cambio di ruolo.
- */
-export default function UserRoleSelect({ userId, currentRole, onRoleChange }) {
+export default function UserRoleSelect({
+  userId,
+  currentRole,
+  onRoleChange,
+  ...rest
+}) {
   const handleChange = (e) => {
     onRoleChange(userId, e.target.value);
   };
 
   return (
-    <StyledSelect value={currentRole} onChange={handleChange}>
-      {ROLE_OPTIONS.map(role => (
+    <StyledSelect
+      value={currentRole}
+      onChange={handleChange}
+      aria-label="User role"
+      {...rest}
+    >
+      {ROLE_OPTIONS.map((role) => (
         <option key={role} value={role}>
-          {role.charAt(0).toUpperCase() + role.slice(1)} {/* Capitalizza la prima lettera */}
+          {role.charAt(0).toUpperCase() + role.slice(1)}
         </option>
       ))}
     </StyledSelect>
   );
 }
+
+UserRoleSelect.propTypes = {
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  currentRole: PropTypes.string.isRequired,
+  onRoleChange: PropTypes.func.isRequired,
+};

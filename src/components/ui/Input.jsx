@@ -2,9 +2,6 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
-/* ------------------------------------------------------------------ */
-/*  Styled                                                            */
-/* ------------------------------------------------------------------ */
 const InputWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing(2)};
   width: 100%;
@@ -28,7 +25,7 @@ const IconSlot = styled.span`
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.colors.textLight};
-  pointer-events: none;   /* non intercetta il click */
+  pointer-events: none;
   font-size: 0.9rem;
 `;
 
@@ -59,45 +56,49 @@ const ErrorMessage = styled.p`
   margin-top: ${({ theme }) => theme.spacing(0.5)};
 `;
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                         */
-/* ------------------------------------------------------------------ */
 const Input = forwardRef(
   (
     {
       label,
-      icon,        // <FaUser />, <FaEnvelope />, ...
+      icon,
       type = 'text',
       name,
+      id, // supporta id personalizzato
       error,
-      as = 'input',  // supporta textarea
+      as = 'input',
+      autoComplete, // nuovo: supporta l’attributo autocomplete!
       ...props
     },
     ref
-  ) => (
-    <InputWrapper>
-      {label && <Label htmlFor={name}>{label}</Label>}
+  ) => {
+    const inputId = id || name; // usa id se presente, altrimenti name
 
-      <ControlWrapper>
-        {icon && <IconSlot>{icon}</IconSlot>}
+    return (
+      <InputWrapper>
+        {label && <Label htmlFor={inputId}>{label}</Label>}
 
-        <StyledInput
-          as={as}
-          type={type}
-          name={name}
-          id={name}
-          ref={ref}
-          $hasError={Boolean(error)}
-          $hasIcon={Boolean(icon)}
-          {...props}
-        />
-      </ControlWrapper>
+        <ControlWrapper>
+          {icon && <IconSlot>{icon}</IconSlot>}
 
-      {error && (
-        <ErrorMessage role="alert">{error}</ErrorMessage>
-      )}
-    </InputWrapper>
-  )
+          <StyledInput
+            as={as}
+            type={type}
+            name={name}
+            id={inputId}
+            ref={ref}
+            $hasError={Boolean(error)}
+            $hasIcon={Boolean(icon)}
+            autoComplete={autoComplete}
+            {...props}
+          />
+        </ControlWrapper>
+
+        {error && (
+          <ErrorMessage role="alert">{error}</ErrorMessage>
+        )}
+      </InputWrapper>
+    );
+  }
 );
 
 export default Input;

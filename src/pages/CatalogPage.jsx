@@ -4,8 +4,6 @@ import api from '../api/api';
 import ProductCard from '../components/products/ProductCard';
 import Spinner from '../components/ui/Spinner';
 
-/* ---------- layout ---------- */
-
 const Page = styled.div`
   display: flex;
   gap: 2rem;
@@ -25,14 +23,10 @@ const Main = styled.main`
   flex-direction: column;
 `;
 
-/* ---------- typography ---------- */
-
 const Heading = styled.h2`
   margin-bottom: 0.5rem;
   color: ${({ theme }) => theme.colors.text};
 `;
-
-/* ---------- lists ---------- */
 
 const List = styled.ul`
   list-style: none;
@@ -51,8 +45,6 @@ const ListItem = styled.li`
   }
 `;
 
-/* ---------- buttons ---------- */
-
 const TextButton = styled.button`
   background: none;
   border: none;
@@ -69,8 +61,6 @@ const TextButton = styled.button`
   }
 `;
 
-/* ---------- inputs ---------- */
-
 const SearchInput = styled.input`
   width: 100%;
   padding: 0.5rem;
@@ -79,28 +69,21 @@ const SearchInput = styled.input`
   margin-bottom: 1rem;
 `;
 
-/* ---------- grid ---------- */
-
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
 `;
 
-/* ---------- component ---------- */
-
 export default function CatalogPage() {
-  /* data ------------------------------------------------------------------ */
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['All Products']);
   const [loading, setLoading] = useState(true);
 
-  /* ui state -------------------------------------------------------------- */
   const [activeCategory, setActiveCategory] = useState('All Products');
-  const [sort, setSort] = useState(null); // null | low | high | az | za
+  const [sort, setSort] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  /* fetch data once ------------------------------------------------------- */
   useEffect(() => {
     (async () => {
       try {
@@ -116,22 +99,18 @@ export default function CatalogPage() {
     })();
   }, []);
 
-  /* derived list ---------------------------------------------------------- */
   const filteredProducts = useMemo(() => {
     let list = [...products];
 
-    /* category filter */
     if (activeCategory !== 'All Products') {
       list = list.filter(p => p.category === activeCategory);
     }
 
-    /* search filter */
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(p => p.name.toLowerCase().includes(q));
     }
 
-    /* sort */
     switch (sort) {
       case 'low':
         list.sort((a, b) => a.price - b.price);
@@ -146,26 +125,23 @@ export default function CatalogPage() {
         list.sort((a, b) => b.name.localeCompare(a.name));
         break;
       default:
-        /* keep original order (assumed popularity) */
         break;
     }
 
     return list;
   }, [products, activeCategory, sort, searchQuery]);
 
-  /* handlers -------------------------------------------------------------- */
   const resetFilters = useCallback(() => {
     setActiveCategory('All Products');
     setSort(null);
     setSearchQuery('');
   }, []);
 
-  /* render ---------------------------------------------------------------- */
   if (loading) return <Spinner />;
 
   return (
     <Page>
-      {/* ---------- sidebar ---------- */}
+      {/* Sidebar */}
       <Sidebar>
         <section>
           <Heading>Categories</Heading>
@@ -176,7 +152,7 @@ export default function CatalogPage() {
                 $active={cat === activeCategory}
                 onClick={() => {
                   setActiveCategory(cat);
-                  setSort(null); // reset sorting on category change
+                  setSort(null);
                 }}
               >
                 {cat}
@@ -201,10 +177,9 @@ export default function CatalogPage() {
         </section>
       </Sidebar>
 
-      {/* ---------- main ---------- */}
+      {/* Main */}
       <Main>
         <Heading>Catalog</Heading>
-
         <label htmlFor="search" style={{ display: 'none' }}>
           Search products
         </label>
@@ -215,12 +190,10 @@ export default function CatalogPage() {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
         />
-
         <div style={{ marginBottom: '1rem' }}>
           {filteredProducts.length} product
           {filteredProducts.length !== 1 && 's'} found
         </div>
-
         <Grid>
           {filteredProducts.map(product => (
             <ProductCard key={product.id} product={product} />

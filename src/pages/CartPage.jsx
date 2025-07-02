@@ -45,7 +45,8 @@ const Actions = styled.div`
 `
 
 export default function CartPage() {
-  const { items, totalQty, totalPrice } = useSelector(state => state.cart)
+  // Nomi proprietà aggiornati per coerenza con slice
+  const { items, totalItems, totalAmount } = useSelector(state => state.cart)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -65,24 +66,30 @@ export default function CartPage() {
     <Container>
       <Title>Shopping Cart</Title>
       <List>
-        {items.map(({ product, qty }) => (
-          <Item key={product.id}>
-            <Img src={product.image} alt={product.name} />
-            <Info>
-              <Name>{product.name}</Name>
-              <Qty>Quantity: {qty}</Qty>
-              <Price>€{(product.price * qty).toFixed(2)}</Price>
-            </Info>
-            <button onClick={() => dispatch(removeFromCart(product.id))}>
-              Remove
-            </button>
-          </Item>
-        ))}
+        {items.map((item) => {
+          // Calcolo prezzo unitario, con gestione sconto se presente
+          const unitPrice = item.discountPrice && item.isDiscounted
+            ? item.discountPrice
+            : item.price;
+          return (
+            <Item key={item.id}>
+              <Img src={item.image || (item.images ? item.images[0] : '')} alt={item.name} />
+              <Info>
+                <Name>{item.name}</Name>
+                <Qty>Quantity: {item.qty}</Qty>
+                <Price>€{(unitPrice * item.qty).toFixed(2)}</Price>
+              </Info>
+              <button onClick={() => dispatch(removeFromCart(item.id))}>
+                Remove
+              </button>
+            </Item>
+          );
+        })}
       </List>
       <Actions>
         <div>
-          <div>Total Items: {totalQty}</div>
-          <div>Total Price: €{totalPrice.toFixed(2)}</div>
+          <div>Total Items: {totalItems}</div>
+          <div>Total Price: €{totalAmount.toFixed(2)}</div>
         </div>
         <button onClick={() => dispatch(clearCart())}>
           Clear Cart

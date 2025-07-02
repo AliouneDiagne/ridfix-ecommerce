@@ -1,3 +1,5 @@
+// src/components/auth/LoginForm.jsx
+
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
@@ -10,23 +12,11 @@ import Input from '../ui/Input';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-/* ─────────────────────────────────────────────
- *  Schema di validazione
- * ────────────────────────────────────────────*/
 const loginSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Formato email non valido')
-    .required('Email obbligatoria'),
-  password: yup
-    .string()
-    .min(6, 'La password deve contenere almeno 6 caratteri')
-    .required('Password obbligatoria'),
+  email: yup.string().email('Formato email non valido').required('Email obbligatoria'),
+  password: yup.string().min(6, 'La password deve contenere almeno 6 caratteri').required('Password obbligatoria'),
 });
 
-/* ─────────────────────────────────────────────
- *  Stili container
- * ────────────────────────────────────────────*/
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
@@ -36,37 +26,27 @@ const FormContainer = styled.form`
   padding: ${({ theme }) => theme.spacing(4)};
   background: ${({ theme }) => theme.colors.surfaceLight};
   border-radius: ${({ theme }) => theme.borderRadius};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 `;
 
-/* ─────────────────────────────────────────────
- *  Component
- * ────────────────────────────────────────────*/
 export default function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status: authStatus, error: authError } = useSelector(
-    (state) => state.auth,
-  );
+  const authStatus = useSelector(state => state.auth.status);
+  const authError = useSelector(state => state.auth.error);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(loginSchema),
   });
 
   const onSubmit = async (data) => {
     try {
       const result = await dispatch(loginUser(data)).unwrap();
-      toast.success(`Benvenuto, ${result.user.email}!`);
+      const user = result?.user || result?.payload || data;
+      toast.success(`Benvenuto, ${user.email || user.name || 'utente'}!`);
       navigate('/');
     } catch (error) {
-      // usiamo "error" per rispettare ESLint (no-unused-vars)
-      const message =
-        authError || error?.message || 'Login fallito. Verifica le credenziali.';
-      toast.error(message);
+      toast.error(authError || error?.message || 'Login fallito. Verifica le credenziali.');
     }
   };
 
@@ -77,15 +57,18 @@ export default function LoginForm() {
       <Input
         label="Email"
         name="email"
+        id="email"
         type="email"
+        autoComplete="email"
         {...register('email')}
         error={errors.email?.message}
       />
-
       <Input
         label="Password"
         name="password"
+        id="password"
         type="password"
+        autoComplete="current-password"
         {...register('password')}
         error={errors.password?.message}
       />

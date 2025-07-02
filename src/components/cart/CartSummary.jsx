@@ -4,10 +4,6 @@ import Button from '../ui/Button';
 import { useNavigate } from 'react-router-dom';
 import formatPrice from '../../utils/formatPrice';
 
-/**
- * Componente CartSummary.
- * Mostra un riepilogo del carrello con subtotale, tasse e spedizione (simulati), e totale.
- */
 const SummaryContainer = styled.div`
   background: ${({ theme }) => theme.colors.surfaceLight};
   padding: ${({ theme }) => theme.spacing(3)};
@@ -46,13 +42,13 @@ const CheckoutButton = styled(Button)`
 const CartSummary = ({ subtotal }) => {
   const navigate = useNavigate();
 
-  // Simulazione tasse e spedizione [58]
-  const taxes = subtotal * 0.05; // 5% di tasse
-  const shipping = subtotal > 50000 ? 0 : 799; // Spedizione gratis sopra 50€ (in cent)
+  // Tasse e spedizione in euro
+  const taxes = subtotal * 0.05; // 5%
+  const shipping = subtotal > 50 ? 0 : 7.99; // Spedizione gratis sopra 50 euro
   const total = subtotal + taxes + shipping;
 
   const handleCheckout = () => {
-    navigate('/checkout'); // Naviga alla pagina di checkout [76]
+    navigate('/checkout');
   };
 
   return (

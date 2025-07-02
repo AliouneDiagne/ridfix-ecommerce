@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/slices/cartSlice';
+import { toggleWishlist, selectWishlistIds } from '../../store/slices/wishlistSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 
 /* ---------- styled components ---------- */
 const Card = styled.div`
@@ -11,6 +15,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   transition: box-shadow .2s;
+  position: relative;
   &:hover { box-shadow: 0 4px 12px rgba(0,0,0,.2); }
 `;
 
@@ -23,6 +28,22 @@ const ImgWrapper = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+`;
+
+const HeartBtn = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: ${({ isActive, theme }) => (isActive ? theme.colors.primary : '#bbb')};
+  font-size: 1.3em;
+  z-index: 2;
+  transition: color 0.15s;
+  &:focus {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
   }
 `;
 
@@ -48,9 +69,9 @@ const Price = styled.div`
 
 const StockBadge = styled.span`
   background: ${({ qty }) =>
-    qty === 0      ? '#dc3545' :   // rosso
-    qty <= 5       ? '#ffc107' :   // giallo
-                     '#28a745'};   // verde
+    qty === 0      ? '#dc3545' :
+    qty <= 5       ? '#ffc107' :
+                     '#28a745'};
   color: #fff;
   font-size: .75rem;
   padding: .25rem .5rem;
@@ -74,8 +95,11 @@ const AddBtn = styled.button.attrs(({ disabled }) => ({ disabled }))`
 /* ---------- componente ---------- */
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
+  const wishlistIds = useSelector(selectWishlistIds);
 
-  /* countInStock arriva già dalla normalizzazione; faccio fallback a inStock */
+  // PATCH: confronto super-resiliente per numeri e stringhe
+  const isInWishlist = wishlistIds.some(id => String(id) === String(product.id));
+
   const qty = product.countInStock ?? product.inStock ?? 0;
 
   const stockLabel =
@@ -90,6 +114,14 @@ export default function ProductCard({ product }) {
     <Card>
       <ImgWrapper>
         <img src={imageSrc} alt={product.name} />
+        <HeartBtn
+          isActive={isInWishlist}
+          aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          onClick={() => dispatch(toggleWishlist(product))}
+        >
+          <FontAwesomeIcon icon={isInWishlist ? solidHeart : regularHeart} />
+        </HeartBtn>
       </ImgWrapper>
 
       <Body>
